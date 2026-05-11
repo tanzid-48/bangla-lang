@@ -97,22 +97,26 @@ function interpret(tokens) {
     if (!fn) throw new Error(`"${name}" নামে কোনো কাজ নেই`);
 
     const savedVars = { ...vars };
+    const savedPos = pos;
+
     fn.params.forEach((p, i) => { vars[p] = args[i] ?? null; });
 
     let result = null;
+    pos = fn.bodyPos;
+
     try {
-      const savedPos = pos;
-      pos = fn.bodyPos;
-      runBlock();
-      pos = savedPos;
+  
+  
+    runBlock();
     } catch (e) {
-      if (e.type === 'RETURN') {
+      if (e && e.type === 'RETURN') {
         result = e.value;
       } else {
         throw e;
       }
     }
 
+    pos = savedPos;
     Object.keys(vars).forEach(k => delete vars[k]);
     Object.assign(vars, savedVars);
     return result;
@@ -133,10 +137,10 @@ function interpret(tokens) {
     }
   }
 
-  async function runStatement() {
+  function runStatement() {
     const t = peek();
 
-    // ধরো ক = ৫;  (declare + reassign দুটোই)
+
     if (t.type === 'TOKEN_VAR') {
       consume();
       const name = expect('TOKEN_IDENTIFIER').value;
@@ -145,7 +149,7 @@ function interpret(tokens) {
       expect('TOKEN_SEMICOLON');
     }
 
-    // দেখাও "কিছু";
+
     else if (t.type === 'TOKEN_PRINT') {
       consume();
       const val = parseExpr();
@@ -153,33 +157,35 @@ function interpret(tokens) {
       expect('TOKEN_SEMICOLON');
     }
 
-    // জিজ্ঞেস করো ক "আপনার নাম?";
+ 
     else if (t.type === 'TOKEN_INPUT') {
       consume();
       const name = expect('TOKEN_IDENTIFIER').value;
       const question = parseExpr();
       expect('TOKEN_SEMICOLON');
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-      });
-      vars[name] = await new Promise(resolve => {
-        rl.question(question + ' ', answer => {
-          rl.close();
-          const num = parseFloat(answer);
-          resolve(isNaN(num) ? answer : num);
-        });
-      });
+      process.stdout.write(question + ' ');
+      const buf = Buffer.alloc(1024);
+      let input = '';
+      const fd = require('fs').openSync('/dev/stdin', 'rs');
+      while (true) {
+        const n = require('fs').readSync(fd, buf, 0, 1, null);
+        const ch = buf.slice(0, n).toString();
+        if (ch === '\n' || ch === '\r' || n === 0) break;
+        input += ch;
+      }
+      require('fs').closeSync(fd);
+      input = input.trim();
+      const num = parseFloat(input);
+      vars[name] = isNaN(num) ? input : num;
     }
 
-    // সমস্যা "error message";
     else if (t.type === 'TOKEN_ERROR') {
       consume();
       const msg = parseExpr();
       throw new Error(`সমস্যা: ${msg}`);
     }
 
-    // ফেরত দাও মান;
+
     else if (t.type === 'TOKEN_RETURN') {
       consume();
       const value = parseExpr();
@@ -187,7 +193,7 @@ function interpret(tokens) {
       throw { type: 'RETURN', value };
     }
 
-    // যদি (...) { } নাহলে { }
+ 
     else if (t.type === 'TOKEN_IF') {
       consume();
       expect('TOKEN_LPAREN');
@@ -205,7 +211,7 @@ function interpret(tokens) {
       }
     }
 
-    // যতক্ষণ (...) { }
+
     else if (t.type === 'TOKEN_WHILE') {
       consume();
       const condPos = pos;
@@ -226,32 +232,32 @@ function interpret(tokens) {
       }
       skipBlock();
     }
-// গণনা করো (ধরো ক = 0; ক < 5; ক = ক + 1) { }
+
     else if (t.type === 'TOKEN_FOR') {
       consume();
       expect('TOKEN_LPAREN');
 
-      // init: ধরো ক = 1
+
       if (peek().type === 'TOKEN_VAR') consume();
       const initName = expect('TOKEN_IDENTIFIER').value;
       expect('TOKEN_ASSIGN');
       vars[initName] = parseExpr();
       expect('TOKEN_SEMICOLON');
 
-      // condition position
+
+
       const condPos = pos;
 
-      // skip condition to find update position
+
       parseExpr();
       expect('TOKEN_SEMICOLON');
 
-      // update position
-      const updatePos = pos;
+
       const updateName = expect('TOKEN_IDENTIFIER').value;
       expect('TOKEN_ASSIGN');
       const updateExprPos = pos;
 
-      // skip update expression
+
       let depth = 0;
       while (true) {
         const tt = peek();
@@ -267,7 +273,7 @@ function interpret(tokens) {
       expect('TOKEN_LBRACE');
       const bodyPos = pos;
 
-      // run loop
+
       pos = condPos;
       let cond = parseExpr();
       expect('TOKEN_SEMICOLON');
@@ -275,23 +281,20 @@ function interpret(tokens) {
       while (cond) {
         pos = bodyPos;
         runBlock();
-
-        // run update
+ 
         pos = updateExprPos;
         vars[updateName] = parseExpr();
-
-        // check condition
+ 
         pos = condPos;
         cond = parseExpr();
         expect('TOKEN_SEMICOLON');
       }
 
-      // skip body
+
       pos = bodyPos;
       skipBlock();
     }
-   
-    // কাজ নাম(params) { }
+
     else if (t.type === 'TOKEN_FUNCTION') {
       consume();
       const name = expect('TOKEN_IDENTIFIER').value;
@@ -308,7 +311,7 @@ function interpret(tokens) {
       skipBlock();
     }
 
-    // করো নাম(args);
+
     else if (t.type === 'TOKEN_CALL') {
       consume();
       const name = expect('TOKEN_IDENTIFIER').value;
@@ -326,14 +329,12 @@ function interpret(tokens) {
     else { consume(); }
   }
 
-  async function run() {
-    expect('TOKEN_START');
-    while (peek().type !== 'TOKEN_END' && peek().type !== 'TOKEN_EOF') {
-      await runStatement();
-    }
+  expect('TOKEN_START');
+  while (peek().type !== 'TOKEN_END' && peek().type !== 'TOKEN_EOF') {
+    runStatement();
   }
 
-  return run();
+
 }
 
 module.exports = { interpret };
