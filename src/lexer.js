@@ -1,16 +1,39 @@
 const KEYWORDS = {
-  'শুরু':        'TOKEN_START',
-  'শেষ':         'TOKEN_END',
-  'ধরো':         'TOKEN_VAR',
-  'দেখাও':       'TOKEN_PRINT',
-  'যদি':         'TOKEN_IF',
-  'নাহলে':       'TOKEN_ELSE',
-  'যতক্ষণ':      'TOKEN_WHILE',
-  'থামো':        'TOKEN_BREAK',
-  'এগিয়ে যাও':  'TOKEN_CONTINUE',
-  'সত্য':        'TOKEN_TRUE',
-  'মিথ্যা':      'TOKEN_FALSE',
-  'শূন্য':       'TOKEN_NULL',
+  // মূল structure
+  'শুরু':          'TOKEN_START',
+  'শেষ':           'TOKEN_END',
+
+  // variable
+  'ধরো':           'TOKEN_VAR',
+
+  // output / input
+  'দেখাও':         'TOKEN_PRINT',
+  'নাও':           'TOKEN_INPUT',
+
+  // condition
+  'যদি':           'TOKEN_IF',
+  'নাহলে':         'TOKEN_ELSE',
+
+  // loop
+  'যতক্ষণ':        'TOKEN_WHILE',
+  'থামো':          'TOKEN_BREAK',
+  'এগিয়ে যাও':    'TOKEN_CONTINUE',
+
+  // function
+  'কাজ':           'TOKEN_FUNCTION',
+  'করো':           'TOKEN_CALL',
+  'ফেরত দাও':      'TOKEN_RETURN',
+
+  // array
+  'তালিকা':        'TOKEN_ARRAY',
+
+  // error
+  'সমস্যা':        'TOKEN_ERROR',
+
+  // values
+  'সত্য':          'TOKEN_TRUE',
+  'মিথ্যা':        'TOKEN_FALSE',
+  'শূন্য':         'TOKEN_NULL',
 };
 
 function tokenize(code) {
@@ -47,13 +70,33 @@ function tokenize(code) {
       continue;
     }
 
+    if (code[i] === '!' && code[i + 1] === '=') {
+      tokens.push({ type: 'TOKEN_NEQ', value: '!=' });
+      i += 2;
+      continue;
+    }
+
+    if (code[i] === '<' && code[i + 1] === '=') {
+      tokens.push({ type: 'TOKEN_LTE', value: '<=' });
+      i += 2;
+      continue;
+    }
+
+    if (code[i] === '>' && code[i + 1] === '=') {
+      tokens.push({ type: 'TOKEN_GTE', value: '>=' });
+      i += 2;
+      continue;
+    }
+
     const symMap = {
-      '=': 'TOKEN_ASSIGN',   '+': 'TOKEN_PLUS',
-      '-': 'TOKEN_MINUS',    '*': 'TOKEN_MULTIPLY',
-      '/': 'TOKEN_DIVIDE',   '(': 'TOKEN_LPAREN',
-      ')': 'TOKEN_RPAREN',   '{': 'TOKEN_LBRACE',
-      '}': 'TOKEN_RBRACE',   ';': 'TOKEN_SEMICOLON',
-      '<': 'TOKEN_LT',       '>': 'TOKEN_GT',
+      '=': 'TOKEN_ASSIGN',    '+': 'TOKEN_PLUS',
+      '-': 'TOKEN_MINUS',     '*': 'TOKEN_MULTIPLY',
+      '/': 'TOKEN_DIVIDE',    '(': 'TOKEN_LPAREN',
+      ')': 'TOKEN_RPAREN',    '{': 'TOKEN_LBRACE',
+      '}': 'TOKEN_RBRACE',    ';': 'TOKEN_SEMICOLON',
+      '<': 'TOKEN_LT',        '>': 'TOKEN_GT',
+      ',': 'TOKEN_COMMA',     '[': 'TOKEN_LBRACKET',
+      ']': 'TOKEN_RBRACKET',
     };
     if (symMap[code[i]]) {
       tokens.push({ type: symMap[code[i]], value: code[i] });
@@ -62,12 +105,13 @@ function tokenize(code) {
     }
 
     let word = '';
-    while (i < code.length && !/[\s=+\-*\/(){};><"0-9]/.test(code[i])) {
+    while (i < code.length && !/[\s=+\-*\/(){};><"0-9,\[\]]/.test(code[i])) {
       word += code[i++];
     }
 
     if (!word) { i++; continue; }
 
+    // দুই শব্দের keyword যেমন "এগিয়ে যাও", "ফেরত দাও"
     const peek = code.slice(i).match(/^\s+(\S+)/);
     if (peek) {
       const twoWord = word + ' ' + peek[1];
