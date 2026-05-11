@@ -1,15 +1,15 @@
 {
-  "name": "bangla-lang",
+  "name": "bangla-lang-by-tanzid",
   "version": "1.0.0",
   "description": "বাংলা ভাষায় লেখা একটি toy programming language",
   "main": "src/index.js",
   "bin": {
-    "bangla-lang": "./src/index.js"
+    "bangla-lang": "src/index.js"
   },
   "scripts": {
     "start": "node src/index.js"
   },
   "keywords": ["bangla", "programming", "language", "toy"],
-  "author": "tanzid-48",
+  "author": "tanzid-dev48",
   "license": "MIT"
 }
