@@ -26,7 +26,7 @@ const KEYWORDS = {
   'ফেরত দাও':       'TOKEN_RETURN',
 
   // array
-  'তালিকা':         'TOKEN_ARRAY',
+  // 'তালিকা':         'TOKEN_ARRAY',
 
   // error
   'সমস্যা':         'TOKEN_ERROR',
