@@ -19,7 +19,7 @@ function interpret(tokens) {
     let left = parsePrimary();
     const ops = [
       'TOKEN_PLUS', 'TOKEN_MINUS', 'TOKEN_MULTIPLY', 'TOKEN_DIVIDE',
-      'TOKEN_EQ', 'TOKEN_NEQ', 'TOKEN_LT', 'TOKEN_GT',
+      'TOKEN_MOD', 'TOKEN_EQ', 'TOKEN_NEQ', 'TOKEN_LT', 'TOKEN_GT',
       'TOKEN_LTE', 'TOKEN_GTE'
     ];
     while (ops.includes(peek().type)) {
@@ -29,6 +29,7 @@ function interpret(tokens) {
       else if (op === '-')   left = left - right;
       else if (op === '*')   left = left * right;
       else if (op === '/')   left = left / right;
+      else if (op === '%')   left = left % right;
       else if (op === '==')  left = left === right;
       else if (op === '!=')  left = left !== right;
       else if (op === '<')   left = left < right;
@@ -48,7 +49,6 @@ function interpret(tokens) {
     if (t.type === 'TOKEN_FALSE')      return false;
     if (t.type === 'TOKEN_NULL')       return null;
 
-    // array literal [1, 2, 3]
     if (t.type === 'TOKEN_LBRACKET') {
       const arr = [];
       while (peek().type !== 'TOKEN_RBRACKET' && peek().type !== 'TOKEN_EOF') {
@@ -60,7 +60,6 @@ function interpret(tokens) {
     }
 
     if (t.type === 'TOKEN_IDENTIFIER') {
-      // function call: করো নাম(args)
       if (peek().type === 'TOKEN_LPAREN') {
         consume();
         const args = [];
@@ -72,7 +71,6 @@ function interpret(tokens) {
         return callFunction(t.value, args);
       }
 
-      // array index: নাম[index]
       if (peek().type === 'TOKEN_LBRACKET') {
         consume();
         const index = parseExpr();
@@ -135,10 +133,10 @@ function interpret(tokens) {
     }
   }
 
-  function runStatement() {
+  async function runStatement() {
     const t = peek();
 
-    // ধরো ক = ৫;
+    // ধরো ক = ৫;  (declare + reassign দুটোই)
     if (t.type === 'TOKEN_VAR') {
       consume();
       const name = expect('TOKEN_IDENTIFIER').value;
@@ -153,6 +151,25 @@ function interpret(tokens) {
       const val = parseExpr();
       console.log(Array.isArray(val) ? JSON.stringify(val) : val);
       expect('TOKEN_SEMICOLON');
+    }
+
+    // জিজ্ঞেস করো ক "আপনার নাম?";
+    else if (t.type === 'TOKEN_INPUT') {
+      consume();
+      const name = expect('TOKEN_IDENTIFIER').value;
+      const question = parseExpr();
+      expect('TOKEN_SEMICOLON');
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+      vars[name] = await new Promise(resolve => {
+        rl.question(question + ' ', answer => {
+          rl.close();
+          const num = parseFloat(answer);
+          resolve(isNaN(num) ? answer : num);
+        });
+      });
     }
 
     // সমস্যা "error message";
@@ -210,6 +227,72 @@ function interpret(tokens) {
       skipBlock();
     }
 
+    // গণনা করো (ধরো ক = 0; ক < 5; ক = ক + 1) { }
+    else if (t.type === 'TOKEN_FOR') {
+      consume();
+      expect('TOKEN_LPAREN');
+
+      // init: ধরো ক = 0
+      if (peek().type === 'TOKEN_VAR') consume();
+      const initName = expect('TOKEN_IDENTIFIER').value;
+      expect('TOKEN_ASSIGN');
+      vars[initName] = parseExpr();
+      expect('TOKEN_SEMICOLON');
+
+      // condition
+      const condPos = pos;
+      let cond = parseExpr();
+      expect('TOKEN_SEMICOLON');
+
+      // update: ক = ক + 1
+      const updatePos = pos;
+      const updateName = expect('TOKEN_IDENTIFIER').value;
+      expect('TOKEN_ASSIGN');
+      const updateExprPos = pos;
+      // skip update expression for now
+      let depth = 0;
+      while (!(peek().type === 'TOKEN_RPAREN' && depth === 0)) {
+        if (peek().type === 'TOKEN_LPAREN') depth++;
+        if (peek().type === 'TOKEN_RPAREN') depth--;
+        if (depth < 0) break;
+        consume();
+      }
+      const updateEndPos = pos;
+      expect('TOKEN_RPAREN');
+      expect('TOKEN_LBRACE');
+      const bodyPos = pos;
+
+      while (cond) {
+        pos = bodyPos;
+        runBlock();
+
+        // run update
+        pos = updateExprPos;
+        vars[updateName] = parseExpr();
+
+        // check condition again
+        pos = condPos;
+        cond = parseExpr();
+        expect('TOKEN_SEMICOLON');
+
+        // skip update again
+        pos = updateExprPos;
+        depth = 0;
+        while (!(peek().type === 'TOKEN_RPAREN' && depth === 0)) {
+          if (peek().type === 'TOKEN_LPAREN') depth++;
+          if (peek().type === 'TOKEN_RPAREN') depth--;
+          if (depth < 0) break;
+          consume();
+        }
+        expect('TOKEN_RPAREN');
+        expect('TOKEN_LBRACE');
+      }
+
+      pos = updateEndPos;
+      expect('TOKEN_RPAREN');
+      skipBlock();
+    }
+
     // কাজ নাম(params) { }
     else if (t.type === 'TOKEN_FUNCTION') {
       consume();
@@ -245,10 +328,14 @@ function interpret(tokens) {
     else { consume(); }
   }
 
-  expect('TOKEN_START');
-  while (peek().type !== 'TOKEN_END' && peek().type !== 'TOKEN_EOF') {
-    runStatement();
+  async function run() {
+    expect('TOKEN_START');
+    while (peek().type !== 'TOKEN_END' && peek().type !== 'TOKEN_EOF') {
+      await runStatement();
+    }
   }
+
+  return run();
 }
 
 module.exports = { interpret };

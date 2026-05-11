@@ -18,4 +18,7 @@ if (!fs.existsSync(file)) {
 
 const code = fs.readFileSync(file, 'utf-8');
 const tokens = tokenize(code);
-interpret(tokens);
+interpret(tokens).catch(err => {
+  console.error(err.message);
+  process.exit(1);
+});

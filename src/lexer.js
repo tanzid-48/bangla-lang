@@ -1,39 +1,40 @@
 const KEYWORDS = {
   // মূল structure
-  'শুরু':          'TOKEN_START',
-  'শেষ':           'TOKEN_END',
+  'শুরু':           'TOKEN_START',
+  'শেষ':            'TOKEN_END',
 
   // variable
-  'ধরো':           'TOKEN_VAR',
+  'ধরো':            'TOKEN_VAR',
 
   // output / input
-  'দেখাও':         'TOKEN_PRINT',
-  'নাও':           'TOKEN_INPUT',
+  'দেখাও':          'TOKEN_PRINT',
+  'জিজ্ঞেস করো':   'TOKEN_INPUT',
 
   // condition
-  'যদি':           'TOKEN_IF',
-  'নাহলে':         'TOKEN_ELSE',
+  'যদি':            'TOKEN_IF',
+  'নাহলে':          'TOKEN_ELSE',
 
   // loop
-  'যতক্ষণ':        'TOKEN_WHILE',
-  'থামো':          'TOKEN_BREAK',
-  'এগিয়ে যাও':    'TOKEN_CONTINUE',
+  'যতক্ষণ':         'TOKEN_WHILE',
+  'গণনা করো':       'TOKEN_FOR',
+  'থামো':           'TOKEN_BREAK',
+  'এগিয়ে যাও':     'TOKEN_CONTINUE',
 
   // function
-  'কাজ':           'TOKEN_FUNCTION',
-  'করো':           'TOKEN_CALL',
-  'ফেরত দাও':      'TOKEN_RETURN',
+  'কাজ':            'TOKEN_FUNCTION',
+  'করো':            'TOKEN_CALL',
+  'ফেরত দাও':       'TOKEN_RETURN',
 
   // array
-  'তালিকা':        'TOKEN_ARRAY',
+  'তালিকা':         'TOKEN_ARRAY',
 
   // error
-  'সমস্যা':        'TOKEN_ERROR',
+  'সমস্যা':         'TOKEN_ERROR',
 
   // values
-  'সত্য':          'TOKEN_TRUE',
-  'মিথ্যা':        'TOKEN_FALSE',
-  'শূন্য':         'TOKEN_NULL',
+  'সত্য':           'TOKEN_TRUE',
+  'মিথ্যা':         'TOKEN_FALSE',
+  'শূন্য':          'TOKEN_NULL',
 };
 
 function tokenize(code) {
@@ -66,58 +67,61 @@ function tokenize(code) {
 
     if (code[i] === '=' && code[i + 1] === '=') {
       tokens.push({ type: 'TOKEN_EQ', value: '==' });
-      i += 2;
-      continue;
+      i += 2; continue;
     }
-
     if (code[i] === '!' && code[i + 1] === '=') {
       tokens.push({ type: 'TOKEN_NEQ', value: '!=' });
-      i += 2;
-      continue;
+      i += 2; continue;
     }
-
     if (code[i] === '<' && code[i + 1] === '=') {
       tokens.push({ type: 'TOKEN_LTE', value: '<=' });
-      i += 2;
-      continue;
+      i += 2; continue;
     }
-
     if (code[i] === '>' && code[i + 1] === '=') {
       tokens.push({ type: 'TOKEN_GTE', value: '>=' });
-      i += 2;
-      continue;
+      i += 2; continue;
     }
 
     const symMap = {
       '=': 'TOKEN_ASSIGN',    '+': 'TOKEN_PLUS',
       '-': 'TOKEN_MINUS',     '*': 'TOKEN_MULTIPLY',
-      '/': 'TOKEN_DIVIDE',    '(': 'TOKEN_LPAREN',
-      ')': 'TOKEN_RPAREN',    '{': 'TOKEN_LBRACE',
-      '}': 'TOKEN_RBRACE',    ';': 'TOKEN_SEMICOLON',
-      '<': 'TOKEN_LT',        '>': 'TOKEN_GT',
-      ',': 'TOKEN_COMMA',     '[': 'TOKEN_LBRACKET',
-      ']': 'TOKEN_RBRACKET',
+      '/': 'TOKEN_DIVIDE',    '%': 'TOKEN_MOD',
+      '(': 'TOKEN_LPAREN',    ')': 'TOKEN_RPAREN',
+      '{': 'TOKEN_LBRACE',    '}': 'TOKEN_RBRACE',
+      ';': 'TOKEN_SEMICOLON', '<': 'TOKEN_LT',
+      '>': 'TOKEN_GT',        ',': 'TOKEN_COMMA',
+      '[': 'TOKEN_LBRACKET',  ']': 'TOKEN_RBRACKET',
     };
     if (symMap[code[i]]) {
       tokens.push({ type: symMap[code[i]], value: code[i] });
-      i++;
-      continue;
+      i++; continue;
     }
 
     let word = '';
-    while (i < code.length && !/[\s=+\-*\/(){};><"0-9,\[\]]/.test(code[i])) {
+    while (i < code.length && !/[\s=+\-*\/%(){};><"0-9,\[\]]/.test(code[i])) {
       word += code[i++];
     }
 
     if (!word) { i++; continue; }
 
-    // দুই শব্দের keyword যেমন "এগিয়ে যাও", "ফেরত দাও"
-    const peek = code.slice(i).match(/^\s+(\S+)/);
-    if (peek) {
-      const twoWord = word + ' ' + peek[1];
+    // তিন শব্দের keyword: "জিজ্ঞেস করো", "গণনা করো", "ফেরত দাও", "এগিয়ে যাও"
+    const rest = code.slice(i);
+    const threeMatch = rest.match(/^\s+(\S+)\s+(\S+)/);
+    if (threeMatch) {
+      const threeWord = word + ' ' + threeMatch[1] + ' ' + threeMatch[2];
+      if (KEYWORDS[threeWord]) {
+        tokens.push({ type: KEYWORDS[threeWord], value: threeWord });
+        i += threeMatch[0].length;
+        continue;
+      }
+    }
+
+    const twoMatch = rest.match(/^\s+(\S+)/);
+    if (twoMatch) {
+      const twoWord = word + ' ' + twoMatch[1];
       if (KEYWORDS[twoWord]) {
         tokens.push({ type: KEYWORDS[twoWord], value: twoWord });
-        i += peek[0].length;
+        i += twoMatch[0].length;
         continue;
       }
     }
