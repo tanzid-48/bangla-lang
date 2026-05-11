@@ -226,41 +226,51 @@ function interpret(tokens) {
       }
       skipBlock();
     }
-
-    // গণনা করো (ধরো ক = 0; ক < 5; ক = ক + 1) { }
+// গণনা করো (ধরো ক = 0; ক < 5; ক = ক + 1) { }
     else if (t.type === 'TOKEN_FOR') {
       consume();
       expect('TOKEN_LPAREN');
 
-      // init: ধরো ক = 0
+      // init: ধরো ক = 1
       if (peek().type === 'TOKEN_VAR') consume();
       const initName = expect('TOKEN_IDENTIFIER').value;
       expect('TOKEN_ASSIGN');
       vars[initName] = parseExpr();
       expect('TOKEN_SEMICOLON');
 
-      // condition
+      // condition position
       const condPos = pos;
-      let cond = parseExpr();
+
+      // skip condition to find update position
+      parseExpr();
       expect('TOKEN_SEMICOLON');
 
-      // update: ক = ক + 1
+      // update position
       const updatePos = pos;
       const updateName = expect('TOKEN_IDENTIFIER').value;
       expect('TOKEN_ASSIGN');
       const updateExprPos = pos;
-      // skip update expression for now
+
+      // skip update expression
       let depth = 0;
-      while (!(peek().type === 'TOKEN_RPAREN' && depth === 0)) {
-        if (peek().type === 'TOKEN_LPAREN') depth++;
-        if (peek().type === 'TOKEN_RPAREN') depth--;
-        if (depth < 0) break;
+      while (true) {
+        const tt = peek();
+        if (tt.type === 'TOKEN_EOF') break;
+        if (tt.type === 'TOKEN_LPAREN') { depth++; consume(); continue; }
+        if (tt.type === 'TOKEN_RPAREN') {
+          if (depth === 0) break;
+          depth--; consume(); continue;
+        }
         consume();
       }
-      const updateEndPos = pos;
       expect('TOKEN_RPAREN');
       expect('TOKEN_LBRACE');
       const bodyPos = pos;
+
+      // run loop
+      pos = condPos;
+      let cond = parseExpr();
+      expect('TOKEN_SEMICOLON');
 
       while (cond) {
         pos = bodyPos;
@@ -270,29 +280,17 @@ function interpret(tokens) {
         pos = updateExprPos;
         vars[updateName] = parseExpr();
 
-        // check condition again
+        // check condition
         pos = condPos;
         cond = parseExpr();
         expect('TOKEN_SEMICOLON');
-
-        // skip update again
-        pos = updateExprPos;
-        depth = 0;
-        while (!(peek().type === 'TOKEN_RPAREN' && depth === 0)) {
-          if (peek().type === 'TOKEN_LPAREN') depth++;
-          if (peek().type === 'TOKEN_RPAREN') depth--;
-          if (depth < 0) break;
-          consume();
-        }
-        expect('TOKEN_RPAREN');
-        expect('TOKEN_LBRACE');
       }
 
-      pos = updateEndPos;
-      expect('TOKEN_RPAREN');
+      // skip body
+      pos = bodyPos;
       skipBlock();
     }
-
+   
     // কাজ নাম(params) { }
     else if (t.type === 'TOKEN_FUNCTION') {
       consume();
