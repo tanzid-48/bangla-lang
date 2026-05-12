@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>বাংলা-ল্যাং Playground</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --green: #3fb950;
+      --green-dim: #1a4a2e;
+      --red: #f85149;
+      --yellow: #d29922;
+      --blue: #58a6ff;
+      --text: #e6edf3;
+      --text-dim: #7d8590;
+      --accent: #238636;
+      --accent-hover: #2ea043;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .logo-flag { font-size: 24px; }
+
+    .header-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .header-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color .2s;
+    }
+
+    .header-links a:hover { color: var(--text); }
+
+    .npm-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--green);
+    }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .run-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 20px;
+      font-size: 15px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background .2s, transform .1s;
+    }
+
+    .run-btn:hover { background: var(--accent-hover); }
+    .run-btn:active { transform: scale(0.97); }
+
+    .clear-btn {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-family: 'Hind Siliguri', sans-serif;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .clear-btn:hover { border-color: var(--text-dim); color: var(--text); }
+
+    .examples-label {
+      color: var(--text-dim);
+      font-size: 13px;
+      margin-left: 8px;
+    }
+
+    .example-btns {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .example-btn {
+      background: var(--surface2);
+      color: var(--blue);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-family: 'Hind Siliguri', sans-serif;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .example-btn:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    /* ── MAIN ── */
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── EDITOR PANE ── */
+    .editor-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+    }
+
+    .pane-header {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 16px;
+      font-size: 12px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pane-header .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    #editor {
+      flex: 1;
+      background: var(--bg);
+      color: var(--text);
+      border: none;
+      outline: none;
+      resize: none;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      tab-size: 2;
+      overflow-y: auto;
+    }
+
+    /* ── OUTPUT PANE ── */
+    .output-pane {
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #output {
+      flex: 1;
+      background: var(--bg);
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .output-line { color: var(--text); }
+    .output-error { color: var(--red); }
+    .output-success { color: var(--green); }
+    .output-empty { color: var(--text-dim); font-style: italic; }
+
+    /* ── KEYWORDS PANEL ── */
+    .keywords-panel {
+      width: 200px;
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .kw-title {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 16px;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .kw-list {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .kw-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .kw-item:hover { background: var(--surface2); }
+
+    .kw-bangla {
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 13px;
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    .kw-meaning {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-flag">🇧🇩</span>
+    বাংলা-ল্যাং Playground
+  </div>
+  <div class="header-links">
+    <a href="https://github.com/tanzid-48/bangla-lang" target="_blank">GitHub</a>
+    <span class="npm-badge">npm i -g bangla-lang-by-tanzid</span>
+  </div>
+</header>
+
+<div class="toolbar">
+  <button class="run-btn" onclick="runCode()">▶ চালাও</button>
+  <button class="clear-btn" onclick="clearOutput()">আউটপুট মুছো</button>
+  <span class="examples-label">উদাহরণ:</span>
+  <div class="example-btns">
+    <button class="example-btn" onclick="loadExample('hello')">Hello World</button>
+    <button class="example-btn" onclick="loadExample('loop')">Loop</button>
+    <button class="example-btn" onclick="loadExample('function')">Function</button>
+    <button class="example-btn" onclick="loadExample('array')">Array</button>
+    <button class="example-btn" onclick="loadExample('condition')">Condition</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="editor-pane">
+    <div class="pane-header">
+      <span class="dot"></span>
+      program.bangla
+    </div>
+    <textarea id="editor" spellcheck="false" placeholder="এখানে বাংলা কোড লিখুন..."></textarea>
+  </div>
+
+  <div class="output-pane">
+    <div class="pane-header">
+      <span class="dot" style="background:var(--blue)"></span>
+      আউটপুট
+    </div>
+    <div id="output"><span class="output-empty">// আউটপুট এখানে দেখাবে</span></div>
+  </div>
+
+  <div class="keywords-panel">
+    <div class="kw-title">📖 Keywords</div>
+    <div class="kw-list" id="kwList"></div>
+  </div>
+</div>
+
+<script>
+// ─── KEYWORDS ───────────────────────────────────────────
+const KEYWORDS_LIST = [
+  { bangla: 'শুরু', meaning: 'শুরু' },
+  { bangla: 'শেষ', meaning: 'শেষ' },
+  { bangla: 'ধরো', meaning: 'variable' },
+  { bangla: 'দেখাও', meaning: 'print' },
+  { bangla: 'যদি', meaning: 'if' },
+  { bangla: 'নাহলে', meaning: 'else' },
+  { bangla: 'যতক্ষণ', meaning: 'while' },
+  { bangla: 'গণনা করো', meaning: 'for' },
+  { bangla: 'কাজ', meaning: 'function' },
+  { bangla: 'করো', meaning: 'call' },
+  { bangla: 'ফেরত দাও', meaning: 'return' },
+  { bangla: 'থামো', meaning: 'break' },
+  { bangla: 'এগিয়ে যাও', meaning: 'continue' },
+  { bangla: 'সমস্যা', meaning: 'error' },
+  { bangla: 'সত্য', meaning: 'true' },
+  { bangla: 'মিথ্যা', meaning: 'false' },
+  { bangla: 'শূন্য', meaning: 'null' },
+];
+
+const kwList = document.getElementById('kwList');
+KEYWORDS_LIST.forEach(k => {
+  const div = document.createElement('div');
+  div.className = 'kw-item';
+  div.innerHTML = `<span class="kw-bangla">${k.bangla}</span><span class="kw-meaning">${k.meaning}</span>`;
+  div.onclick = () => insertKeyword(k.bangla);
+  kwList.appendChild(div);
+});
+
+function insertKeyword(kw) {
+  const editor = document.getElementById('editor');
+  const start = editor.selectionStart;
+  const val = editor.value;
+  editor.value = val.slice(0, start) + kw + val.slice(start);
+  editor.focus();
+  editor.selectionStart = editor.selectionEnd = start + kw.length;
+}
+
+// ─── EXAMPLES ───────────────────────────────────────────
+const EXAMPLES = {
+  hello: `// Hello World
+শুরু
+
+দেখাও "হ্যালো বাংলাদেশ! 🇧🇩";
+দেখাও "বাংলায় কোড লেখা শুরু!";
+
+শেষ`,
+
+  loop: `// Loop উদাহরণ
+শুরু
+
+দেখাও "১ থেকে ৫ পর্যন্ত:";
+গণনা করো (ধরো ক = 1; ক <= 5; ক = ক + 1) {
+  দেখাও ক;
+}
+
+দেখাও "জোড় সংখ্যা:";
+গণনা করো (ধরো ক = 2; ক <= 10; ক = ক + 2) {
+  দেখাও ক;
+}
+
+শেষ`,
+
+  function: `// Function উদাহরণ
+শুরু
+
+কাজ যোগ(ক, খ) {
+  ফেরত দাও ক + খ;
+}
+
+কাজ গুণ(ক, খ) {
+  ফেরত দাও ক * খ;
+}
+
+ধরো ফলাফল = যোগ(10, 20);
+দেখাও "যোগফল: " + ফলাফল;
+
+ধরো গুণফল = গুণ(5, 6);
+দেখাও "গুণফল: " + গুণফল;
+
+শেষ`,
+
+  array: `// Array উদাহরণ
+শুরু
+
+ধরো সংখ্যা = [10, 20, 30, 40, 50];
+দেখাও "পুরো তালিকা:";
+দেখাও সংখ্যা;
+
+দেখাও "প্রথম উপাদান: " + সংখ্যা[0];
+দেখাও "তৃতীয় উপাদান: " + সংখ্যা[2];
+
+শেষ`,
+
+  condition: `// Condition উদাহরণ
+শুরু
+
+ধরো বয়স = 20;
+
+যদি (বয়স >= 18) {
+  দেখাও "প্রাপ্তবয়স্ক ✓";
+} নাহলে {
+  দেখাও "অপ্রাপ্তবয়স্ক";
+}
+
+ধরো নম্বর = 75;
+যদি (নম্বর >= 80) {
+  দেখাও "A+";
+} নাহলে {
+  যদি (নম্বর >= 70) {
+    দেখাও "A";
+  } নাহলে {
+    দেখাও "B";
+  }
+}
+
+শেষ`,
+};
+
+function loadExample(name) {
+  document.getElementById('editor').value = EXAMPLES[name];
+  clearOutput();
+}
+
+// load hello by default
+document.getElementById('editor').value = EXAMPLES.hello;
+
+// ─── LEXER ──────────────────────────────────────────────
+const KEYWORDS = {
+  'শুরু': 'TOKEN_START', 'শেষ': 'TOKEN_END',
+  'ধরো': 'TOKEN_VAR', 'দেখাও': 'TOKEN_PRINT',
+  'যদি': 'TOKEN_IF', 'নাহলে': 'TOKEN_ELSE',
+  'যতক্ষণ': 'TOKEN_WHILE', 'থামো': 'TOKEN_BREAK',
+  'এগিয়ে যাও': 'TOKEN_CONTINUE', 'কাজ': 'TOKEN_FUNCTION',
+  'করো': 'TOKEN_CALL', 'ফেরত দাও': 'TOKEN_RETURN',
+  'গণনা করো': 'TOKEN_FOR', 'সমস্যা': 'TOKEN_ERROR',
+  'সত্য': 'TOKEN_TRUE', 'মিথ্যা': 'TOKEN_FALSE',
+  'শূন্য': 'TOKEN_NULL',
+};
+
+function tokenize(code) {
+  const tokens = [];
+  let i = 0;
+  while (i < code.length) {
+    if (/\s/.test(code[i])) { i++; continue; }
+    if (code[i] === '/' && code[i+1] === '/') { while (i < code.length && code[i] !== '\n') i++; continue; }
+    if (code[i] === '"') {
+      let str = ''; i++;
+      while (i < code.length && code[i] !== '"') str += code[i++];
+      i++; tokens.push({ type: 'TOKEN_STRING', value: str }); continue;
+    }
+    if (/[0-9]/.test(code[i])) {
+      let num = '';
+      while (i < code.length && /[0-9.]/.test(code[i])) num += code[i++];
+      tokens.push({ type: 'TOKEN_NUMBER', value: num }); continue;
+    }
+    if (code[i] === '=' && code[i+1] === '=') { tokens.push({ type: 'TOKEN_EQ', value: '==' }); i += 2; continue; }
+    if (code[i] === '!' && code[i+1] === '=') { tokens.push({ type: 'TOKEN_NEQ', value: '!=' }); i += 2; continue; }
+    if (code[i] === '<' && code[i+1] === '=') { tokens.push({ type: 'TOKEN_LTE', value: '<=' }); i += 2; continue; }
+    if (code[i] === '>' && code[i+1] === '=') { tokens.push({ type: 'TOKEN_GTE', value: '>=' }); i += 2; continue; }
+    const symMap = { '=':'TOKEN_ASSIGN','+':'TOKEN_PLUS','-':'TOKEN_MINUS','*':'TOKEN_MULTIPLY','/':'TOKEN_DIVIDE','%':'TOKEN_MOD','(':'TOKEN_LPAREN',')':'TOKEN_RPAREN','{':'TOKEN_LBRACE','}':'TOKEN_RBRACE',';':'TOKEN_SEMICOLON','<':'TOKEN_LT','>':'TOKEN_GT',',':'TOKEN_COMMA','[':'TOKEN_LBRACKET',']':'TOKEN_RBRACKET' };
+    if (symMap[code[i]]) { tokens.push({ type: symMap[code[i]], value: code[i] }); i++; continue; }
+    let word = '';
+    while (i < code.length && !/[\s=+\-*\/%(){};><"0-9,\[\]]/.test(code[i])) word += code[i++];
+    if (!word) { i++; continue; }
+    const rest = code.slice(i);
+    const threeM = rest.match(/^\s+(\S+)\s+(\S+)/);
+    if (threeM) { const tw = word+' '+threeM[1]+' '+threeM[2]; if (KEYWORDS[tw]) { tokens.push({ type: KEYWORDS[tw], value: tw }); i += threeM[0].length; continue; } }
+    const twoM = rest.match(/^\s+(\S+)/);
+    if (twoM) { const tw = word+' '+twoM[1]; if (KEYWORDS[tw]) { tokens.push({ type: KEYWORDS[tw], value: tw }); i += twoM[0].length; continue; } }
+    if (KEYWORDS[word]) tokens.push({ type: KEYWORDS[word], value: word });
+    else tokens.push({ type: 'TOKEN_IDENTIFIER', value: word });
+  }
+  tokens.push({ type: 'TOKEN_EOF', value: '' });
+  return tokens;
+}
+
+// ─── INTERPRETER ────────────────────────────────────────
+function interpret(tokens, printFn) {
+  let pos = 0;
+  const vars = {};
+  const functions = {};
+
+  const peek = () => tokens[pos];
+  const consume = () => tokens[pos++];
+  function expect(type) {
+    const t = consume();
+    if (t.type !== type) throw new Error(`Syntax error! "${type}" expected but got "${t.type}" ("${t.value}")`);
+    return t;
+  }
+
+  function parseExpr() {
+    let left = parsePrimary();
+    const ops = ['TOKEN_PLUS','TOKEN_MINUS','TOKEN_MULTIPLY','TOKEN_DIVIDE','TOKEN_MOD','TOKEN_EQ','TOKEN_NEQ','TOKEN_LT','TOKEN_GT','TOKEN_LTE','TOKEN_GTE'];
+    while (ops.includes(peek().type)) {
+      const op = consume().value;
+      const right = parsePrimary();
+      if (op==='+') left = typeof left==='string' ? left+String(right) : left+right;
+      else if (op==='-') left=left-right;
+      else if (op==='*') left=left*right;
+      else if (op==='/') left=left/right;
+      else if (op==='%') left=left%right;
+      else if (op==='==') left=left===right;
+      else if (op==='!=') left=left!==right;
+      else if (op==='<') left=left<right;
+      else if (op==='>') left=left>right;
+      else if (op==='<=') left=left<=right;
+      else if (op==='>=') left=left>=right;
+    }
+    return left;
+  }
+
+  function parsePrimary() {
+    const t = consume();
+    if (t.type==='TOKEN_NUMBER') return parseFloat(t.value);
+    if (t.type==='TOKEN_STRING') return t.value;
+    if (t.type==='TOKEN_TRUE') return true;
+    if (t.type==='TOKEN_FALSE') return false;
+    if (t.type==='TOKEN_NULL') return null;
+    if (t.type==='TOKEN_LBRACKET') {
+      const arr = [];
+      while (peek().type!=='TOKEN_RBRACKET' && peek().type!=='TOKEN_EOF') { arr.push(parseExpr()); if (peek().type==='TOKEN_COMMA') consume(); }
+      expect('TOKEN_RBRACKET'); return arr;
+    }
+    if (t.type==='TOKEN_IDENTIFIER') {
+      if (peek().type==='TOKEN_LPAREN') {
+        consume();
+        const args = [];
+        while (peek().type!=='TOKEN_RPAREN' && peek().type!=='TOKEN_EOF') { args.push(parseExpr()); if (peek().type==='TOKEN_COMMA') consume(); }
+        expect('TOKEN_RPAREN'); return callFunction(t.value, args);
+      }
+      if (peek().type==='TOKEN_LBRACKET') {
+        consume(); const index = parseExpr(); expect('TOKEN_RBRACKET');
+        const arr = vars[t.value];
+        if (!Array.isArray(arr)) throw new Error(`"${t.value}" একটি তালিকা নয়`);
+        return arr[index];
+      }
+      return vars[t.value] ?? 0;
+    }
+    if (t.type==='TOKEN_LPAREN') { const val=parseExpr(); expect('TOKEN_RPAREN'); return val; }
+    throw new Error(`Unexpected token: "${t.value}"`);
+  }
+
+  function callFunction(name, args) {
+    const fn = functions[name];
+    if (!fn) throw new Error(`"${name}" নামে কোনো কাজ নেই`);
+    const savedVars = {...vars};
+    const savedPos = pos;
+    fn.params.forEach((p,i) => { vars[p] = args[i] ?? null; });
+    let result = null;
+    pos = fn.bodyPos;
+    try { runBlock(); }
+    catch(e) { if (e && e.type==='RETURN') result=e.value; else throw e; }
+    pos = savedPos;
+    Object.keys(vars).forEach(k=>delete vars[k]);
+    Object.assign(vars, savedVars);
+    return result;
+  }
+
+  function skipBlock() {
+    let depth=1;
+    while (depth>0) { const t=consume(); if(t.type==='TOKEN_LBRACE') depth++; if(t.type==='TOKEN_RBRACE') depth--; }
+  }
+
+  function runBlock() {
+    while (peek().type!=='TOKEN_RBRACE' && peek().type!=='TOKEN_EOF') runStatement();
+  }
+
+  function runStatement() {
+    const t = peek();
+    if (t.type==='TOKEN_VAR') {
+      consume(); const name=expect('TOKEN_IDENTIFIER').value; expect('TOKEN_ASSIGN'); vars[name]=parseExpr(); expect('TOKEN_SEMICOLON');
+    }
+    else if (t.type==='TOKEN_PRINT') {
+      consume(); const val=parseExpr(); printFn(Array.isArray(val)?JSON.stringify(val):String(val)); expect('TOKEN_SEMICOLON');
+    }
+    else if (t.type==='TOKEN_ERROR') { consume(); const msg=parseExpr(); throw new Error(`সমস্যা: ${msg}`); }
+    else if (t.type==='TOKEN_RETURN') { consume(); const value=parseExpr(); expect('TOKEN_SEMICOLON'); throw {type:'RETURN',value}; }
+    else if (t.type==='TOKEN_IF') {
+      consume(); expect('TOKEN_LPAREN'); const cond=parseExpr(); expect('TOKEN_RPAREN'); expect('TOKEN_LBRACE');
+      if (cond) { runBlock(); expect('TOKEN_RBRACE'); } else skipBlock();
+      if (peek().type==='TOKEN_ELSE') { consume(); expect('TOKEN_LBRACE'); if (!cond) { runBlock(); expect('TOKEN_RBRACE'); } else skipBlock(); }
+    }
+    else if (t.type==='TOKEN_WHILE') {
+      consume(); const condPos=pos; expect('TOKEN_LPAREN'); let cond=parseExpr(); expect('TOKEN_RPAREN'); expect('TOKEN_LBRACE'); const bodyPos=pos;
+      while (cond) { pos=bodyPos; runBlock(); pos=condPos; expect('TOKEN_LPAREN'); cond=parseExpr(); expect('TOKEN_RPAREN'); expect('TOKEN_LBRACE'); }
+      skipBlock();
+    }
+    else if (t.type==='TOKEN_FOR') {
+      consume(); expect('TOKEN_LPAREN');
+      if (peek().type==='TOKEN_VAR') consume();
+      const initName=expect('TOKEN_IDENTIFIER').value; expect('TOKEN_ASSIGN'); vars[initName]=parseExpr(); expect('TOKEN_SEMICOLON');
+      const condPos=pos; parseExpr(); expect('TOKEN_SEMICOLON');
+      const updateName=expect('TOKEN_IDENTIFIER').value; expect('TOKEN_ASSIGN'); const updateExprPos=pos;
+      let depth=0;
+      while (true) { const tt=peek(); if(tt.type==='TOKEN_EOF') break; if(tt.type==='TOKEN_LPAREN'){depth++;consume();continue;} if(tt.type==='TOKEN_RPAREN'){if(depth===0)break;depth--;consume();continue;} consume(); }
+      expect('TOKEN_RPAREN'); expect('TOKEN_LBRACE'); const bodyPos=pos;
+      pos=condPos; let cond=parseExpr(); expect('TOKEN_SEMICOLON');
+      while (cond) { pos=bodyPos; runBlock(); pos=updateExprPos; vars[updateName]=parseExpr(); pos=condPos; cond=parseExpr(); expect('TOKEN_SEMICOLON'); }
+      pos=bodyPos; skipBlock();
+    }
+    else if (t.type==='TOKEN_FUNCTION') {
+      consume(); const name=expect('TOKEN_IDENTIFIER').value; expect('TOKEN_LPAREN');
+      const params=[];
+      while (peek().type!=='TOKEN_RPAREN' && peek().type!=='TOKEN_EOF') { params.push(expect('TOKEN_IDENTIFIER').value); if(peek().type==='TOKEN_COMMA') consume(); }
+      expect('TOKEN_RPAREN'); expect('TOKEN_LBRACE'); const bodyPos=pos; functions[name]={params,bodyPos}; skipBlock();
+    }
+    else if (t.type==='TOKEN_CALL') {
+      consume(); const name=expect('TOKEN_IDENTIFIER').value; expect('TOKEN_LPAREN');
+      const args=[];
+      while (peek().type!=='TOKEN_RPAREN' && peek().type!=='TOKEN_EOF') { args.push(parseExpr()); if(peek().type==='TOKEN_COMMA') consume(); }
+      expect('TOKEN_RPAREN'); expect('TOKEN_SEMICOLON'); callFunction(name,args);
+    }
+    else { consume(); }
+  }
+
+  expect('TOKEN_START');
+  while (peek().type!=='TOKEN_END' && peek().type!=='TOKEN_EOF') runStatement();
+}
+
+// ─── RUN ────────────────────────────────────────────────
+function runCode() {
+  const code = document.getElementById('editor').value;
+  const output = document.getElementById('output');
+  output.innerHTML = '';
+
+  try {
+    const tokens = tokenize(code);
+    const lines = [];
+    interpret(tokens, (line) => lines.push(line));
+    if (lines.length === 0) {
+      output.innerHTML = '<span class="output-success">✓ প্রোগ্রাম সফলভাবে চলেছে (কোনো output নেই)</span>';
+    } else {
+      output.innerHTML = lines.map(l => `<span class="output-line">${escapeHtml(String(l))}</span>`).join('\n');
+    }
+  } catch (err) {
+    output.innerHTML = `<span class="output-error">❌ Error: ${escapeHtml(err.message)}</span>`;
+  }
+}
+
+function clearOutput() {
+  document.getElementById('output').innerHTML = '<span class="output-empty">// আউটপুট এখানে দেখাবে</span>';
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Ctrl+Enter to run
+document.getElementById('editor').addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') runCode();
+});
+</script>
+</body>
+</html>
