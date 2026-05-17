@@ -202,7 +202,7 @@ input:`// Input উদাহরণ
 function load(n){document.getElementById('editor').value=EX[n];clearOut();}
 document.getElementById('editor').value=EX.hello;
 
-const KEYWORDS={'শুরু':'TOKEN_START','শেষ':'TOKEN_END','ধরো':'TOKEN_VAR','দেখাও':'TOKEN_PRINT','যদি':'TOKEN_IF','নাহলে':'TOKEN_ELSE','যতক্ষণ':'TOKEN_WHILE','থামো':'TOKEN_BREAK','এগিয়ে যাও':'TOKEN_CONTINUE','কাজ':'TOKEN_FUNCTION','করো':'TOKEN_CALL','ফেরত দাও':'TOKEN_RETURN','গণনা করো':'TOKEN_FOR','সমস্যা':'TOKEN_ERROR','সত্য':'TOKEN_TRUE','মিথ্যা':'TOKEN_FALSE','শূন্য':'TOKEN_NULL'};
+const KEYWORDS={'শুরু':'TOKEN_START','শেষ':'TOKEN_END','ধরো':'TOKEN_VAR','দেখাও':'TOKEN_PRINT','যদি':'TOKEN_IF','নাহলে':'TOKEN_ELSE','যতক্ষণ':'TOKEN_WHILE','থামো':'TOKEN_BREAK','এগিয়ে যাও':'TOKEN_CONTINUE','কাজ':'TOKEN_FUNCTION','করো':'TOKEN_CALL','ফেরত দাও':'TOKEN_RETURN','গণনা করো':'TOKEN_FOR','সমস্যা':'TOKEN_ERROR','সত্য':'TOKEN_TRUE','মিথ্যা':'TOKEN_FALSE','শূন্য':'TOKEN_NULL','জিজ্ঞেস করো':'TOKEN_INPUT'};
 
 function tokenize(code){
   const tokens=[];let i=0;
