@@ -96,6 +96,7 @@
         <button class="ex-btn" onclick="load('fn')">Function</button>
         <button class="ex-btn" onclick="load('arr')">Array</button>
         <button class="ex-btn" onclick="load('cond')">Condition</button>
+        <button class="ex-btn" onclick="load('input')">Input</button>
       </div>
     </div>
   </div>
@@ -181,7 +182,22 @@ cond:`// Condition উদাহরণ
   }
 }
 
-শেষ`};
+শেষ`,
+input:`// Input উদাহরণ
+শুরু
+
+জিজ্ঞেস করো নাম "আপনার নাম কী?";
+দেখাও "হ্যালো " + নাম;
+
+জিজ্ঞেস করো বয়স "আপনার বয়স কত?";
+যদি (বয়স >= 18) {
+  দেখাও নাম + " প্রাপ্তবয়স্ক!";
+} নাহলে {
+  দেখাও নাম + " অপ্রাপ্তবয়স্ক!";
+}
+
+শেষ`
+};
 
 function load(n){document.getElementById('editor').value=EX[n];clearOut();}
 document.getElementById('editor').value=EX.hello;
@@ -223,6 +239,15 @@ function interpret(tokens,printFn){
   function runStatement(){
     const t=peek();
     if(t.type==='TOKEN_VAR'){consume();const n=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');vars[n]=parseExpr();expect('TOKEN_SEMICOLON');}
+    else if(t.type==='TOKEN_INPUT'){
+  consume();
+  const n=expect('TOKEN_IDENTIFIER').value;
+  const question=parseExpr();
+  expect('TOKEN_SEMICOLON');
+  const answer=window.prompt(question);
+  const num=parseFloat(answer);
+  vars[n]=isNaN(num)?answer:num;
+}
     else if(t.type==='TOKEN_PRINT'){consume();const v=parseExpr();printFn(Array.isArray(v)?JSON.stringify(v):String(v));expect('TOKEN_SEMICOLON');}
     else if(t.type==='TOKEN_ERROR'){consume();const m=parseExpr();throw new Error(`সমস্যা: ${m}`);}
     else if(t.type==='TOKEN_RETURN'){consume();const v=parseExpr();expect('TOKEN_SEMICOLON');throw{type:'RETURN',value:v};}

@@ -158,26 +158,29 @@ function interpret(tokens) {
     }
 
  
-    else if (t.type === 'TOKEN_INPUT') {
-      consume();
-      const name = expect('TOKEN_IDENTIFIER').value;
-      const question = parseExpr();
-      expect('TOKEN_SEMICOLON');
-      process.stdout.write(question + ' ');
-      const buf = Buffer.alloc(1024);
-      let input = '';
-      const fd = require('fs').openSync('/dev/stdin', 'rs');
-      while (true) {
-        const n = require('fs').readSync(fd, buf, 0, 1, null);
-        const ch = buf.slice(0, n).toString();
-        if (ch === '\n' || ch === '\r' || n === 0) break;
-        input += ch;
-      }
-      require('fs').closeSync(fd);
-      input = input.trim();
-      const num = parseFloat(input);
-      vars[name] = isNaN(num) ? input : num;
-    }
+  else if (t.type === 'TOKEN_INPUT') {
+  consume();
+  const name = expect('TOKEN_IDENTIFIER').value;
+  const question = parseExpr();
+  expect('TOKEN_SEMICOLON');
+  process.stdout.write(question + ' ');
+  const { execFileSync } = require('child_process');
+  let input = '';
+  try {
+    input = execFileSync('node', ['-e',
+      "process.stdin.resume();" +
+      "process.stdin.setEncoding('utf8');" +
+      "process.stdin.once('data', function(d){" +
+      "process.stdout.write(d.trim());" +
+      "process.exit(0);})"
+    ], { input: undefined, stdio: ['inherit', 'pipe', 'inherit'] }).toString().trim();
+  } catch(e) {
+    input = '';
+  }
+  const num = parseFloat(input);
+  vars[name] = isNaN(num) ? input : num;
+}
+
 
     else if (t.type === 'TOKEN_ERROR') {
       consume();
@@ -212,6 +215,7 @@ function interpret(tokens) {
     }
 
 
+    
     else if (t.type === 'TOKEN_WHILE') {
       consume();
       const condPos = pos;
