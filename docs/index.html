@@ -248,6 +248,7 @@ function interpret(tokens,printFn){
   const num=parseFloat(answer);
   vars[n]=isNaN(num)?answer:num;
 }
+   else if(t.type==='TOKEN_INPUT'){consume();const n=expect('TOKEN_IDENTIFIER').value;const question=parseExpr();expect('TOKEN_SEMICOLON');const answer=window.prompt(question);const num=parseFloat(answer);vars[n]=isNaN(num)?answer:num;}
     else if(t.type==='TOKEN_PRINT'){consume();const v=parseExpr();printFn(Array.isArray(v)?JSON.stringify(v):String(v));expect('TOKEN_SEMICOLON');}
     else if(t.type==='TOKEN_ERROR'){consume();const m=parseExpr();throw new Error(`সমস্যা: ${m}`);}
     else if(t.type==='TOKEN_RETURN'){consume();const v=parseExpr();expect('TOKEN_SEMICOLON');throw{type:'RETURN',value:v};}

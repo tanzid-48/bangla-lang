@@ -4,6 +4,18 @@
 > Inspired by [Bhailang](https://github.com/DulLabs/bhai-lang)
 
 ---
+## 🌐 Live Demo
+
+🔗 https://tanzid-48.github.io/bangla-lang/
+
+---
+---
+
+## 🌐 Live Demo
+
+👉 [বাংলা-ল্যাং চালিয়ে দেখুন](https://tanzid-48.github.io/bangla-lang/)
+
+---
 
 ## 🚀 কিভাবে run করবেন
 
