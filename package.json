@@ -1,6 +1,6 @@
 {
   "name": "bangla-lang-by-tanzid",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "বাংলা ভাষায় লেখা একটি toy programming language",
   "main": "src/index.js",
   "bin": {
