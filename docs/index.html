@@ -97,6 +97,7 @@
         <button class="ex-btn" onclick="load('arr')">Array</button>
         <button class="ex-btn" onclick="load('cond')">Condition</button>
         <button class="ex-btn" onclick="load('input')">Input</button>
+        <button class="ex-btn" onclick="load('builtin')">Built-in</button>
       </div>
     </div>
   </div>
@@ -129,7 +130,7 @@
 <div class="toast" id="toast">✓ Copied!</div>
 
 <script>
-const KW=[['শুরু','start'],['শেষ','end'],['ধরো','variable'],['দেখাও','print'],['যদি','if'],['নাহলে যদি','elif'],['নাহলে','else'],['যতক্ষণ','while'],['গণনা করো','for'],['কাজ','function'],['করো','call'],['ফেরত দাও','return'],['থামো','break'],['এগিয়ে যাও','continue'],['সমস্যা','error'],['সত্য','true'],['মিথ্যা','false'],['শূন্য','null']];
+const KW=[['শুরু','start'],['শেষ','end'],['ধরো','variable'],['দেখাও','print'],['যদি','if'],['নাহলে যদি','elif'],['নাহলে','else'],['যতক্ষণ','while'],['গণনা করো','for'],['কাজ','function'],['করো','call'],['ফেরত দাও','return'],['থামো','break'],['এগিয়ে যাও','continue'],['সমস্যা','error'],['সত্য','true'],['মিথ্যা','false'],['শূন্য','null'],['দৈর্ঘ্য()','length'],['বর্গমূল()','sqrt'],['পূর্ণসংখ্যা()','floor'],['এলোমেলো()','random'],['মোট()','sum'],['স্ট্রিং()','to string'],['সংখ্যা()','to number']];
 const kl=document.getElementById('kwList');
 KW.forEach(([b,e])=>{const d=document.createElement('div');d.className='kw-item';d.innerHTML=`<span class="kw-b">${b}</span><span class="kw-e">${e}</span>`;d.onclick=()=>{const ed=document.getElementById('editor');const s=ed.selectionStart;ed.value=ed.value.slice(0,s)+b+ed.value.slice(s);ed.focus();ed.selectionStart=ed.selectionEnd=s+b.length};kl.appendChild(d)});
 
@@ -183,6 +184,29 @@ cond:`// Condition উদাহরণ
 }
 
 শেষ`,
+builtin:`// Built-in functions
+শুরু
+
+দেখাও "দৈর্ঘ্য:";
+দেখাও দৈর্ঘ্য("হ্যালো বাংলাদেশ");
+
+দেখাও "বর্গমূল:";
+দেখাও বর্গমূল(25);
+
+দেখাও "পূর্ণসংখ্যা:";
+দেখাও পূর্ণসংখ্যা(3.7);
+
+দেখাও "এলোমেলো সংখ্যা:";
+দেখাও এলোমেলো(1, 100);
+
+ধরো তালিকা = [10, 20, 30, 40, 50];
+দেখাও "মোট:";
+দেখাও মোট(তালিকা);
+
+দেখাও স্ট্রিং(42);
+দেখাও সংখ্যা("99");
+
+শেষ`,
 input:`// Input উদাহরণ
 শুরু
 
@@ -233,30 +257,31 @@ function interpret(tokens,printFn){
   function expect(t){const x=consume();if(x.type!==t)throw new Error(`Syntax error: "${t}" expected, got "${x.value}"`);return x;}
   function parseExpr(){let l=parsePrimary();const ops=['TOKEN_PLUS','TOKEN_MINUS','TOKEN_MULTIPLY','TOKEN_DIVIDE','TOKEN_MOD','TOKEN_EQ','TOKEN_NEQ','TOKEN_LT','TOKEN_GT','TOKEN_LTE','TOKEN_GTE'];while(ops.includes(peek().type)){const op=consume().value;const r=parsePrimary();if(op==='+')l=typeof l==='string'?l+String(r):l+r;else if(op==='-')l=l-r;else if(op==='*')l=l*r;else if(op==='/')l=l/r;else if(op==='%')l=l%r;else if(op==='==')l=l===r;else if(op==='!=')l=l!==r;else if(op==='<')l=l<r;else if(op==='>')l=l>r;else if(op==='<=')l=l<=r;else if(op==='>=')l=l>=r;}return l;}
   function parsePrimary(){const t=consume();if(t.type==='TOKEN_NUMBER')return parseFloat(t.value);if(t.type==='TOKEN_STRING')return t.value;if(t.type==='TOKEN_TRUE')return true;if(t.type==='TOKEN_FALSE')return false;if(t.type==='TOKEN_NULL')return null;if(t.type==='TOKEN_LBRACKET'){const a=[];while(peek().type!=='TOKEN_RBRACKET'&&peek().type!=='TOKEN_EOF'){a.push(parseExpr());if(peek().type==='TOKEN_COMMA')consume();}expect('TOKEN_RBRACKET');return a;}if(t.type==='TOKEN_IDENTIFIER'){if(peek().type==='TOKEN_LPAREN'){consume();const a=[];while(peek().type!=='TOKEN_RPAREN'&&peek().type!=='TOKEN_EOF'){a.push(parseExpr());if(peek().type==='TOKEN_COMMA')consume();}expect('TOKEN_RPAREN');return callFn(t.value,a);}if(peek().type==='TOKEN_LBRACKET'){consume();const idx=parseExpr();expect('TOKEN_RBRACKET');const a=vars[t.value];if(!Array.isArray(a))throw new Error(`"${t.value}" তালিকা নয়`);return a[idx];}return vars[t.value]??0;}if(t.type==='TOKEN_LPAREN'){const v=parseExpr();expect('TOKEN_RPAREN');return v;}throw new Error(`Unexpected: "${t.value}"`);}
-  function callFn(name,args){const fn=fns[name];if(!fn)throw new Error(`"${name}" নামে কোনো কাজ নেই`);const sv={...vars},sp=pos;fn.params.forEach((p,i)=>{vars[p]=args[i]??null;});let res=null;pos=fn.bodyPos;try{runBlock();}catch(e){if(e&&e.type==='RETURN')res=e.value;else throw e;}pos=sp;Object.keys(vars).forEach(k=>delete vars[k]);Object.assign(vars,sv);return res;}
+  const builtins={'দৈর্ঘ্য':a=>{const v=a[0];if(typeof v==='string'||Array.isArray(v))return v.length;throw new Error('দৈর্ঘ্য() শুধু string বা array এ কাজ করে');},'বর্গমূল':a=>Math.sqrt(a[0]),'পূর্ণসংখ্যা':a=>Math.floor(a[0]),'এলোমেলো':a=>Math.floor(Math.random()*(a[1]-a[0]+1))+a[0],'মোট':a=>{if(!Array.isArray(a[0]))throw new Error('মোট() শুধু array এ কাজ করে');return a[0].reduce((x,y)=>x+y,0);},'স্ট্রিং':a=>String(a[0]),'সংখ্যা':a=>parseFloat(a[0])};
+  function callFn(name,args){if(builtins[name])return builtins[name](args);const fn=fns[name];if(!fn)throw new Error(`"${name}" নামে কোনো কাজ নেই`);const sv={...vars},sp=pos;fn.params.forEach((p,i)=>{vars[p]=args[i]??null;});let res=null;pos=fn.bodyPos;try{runBlock();}catch(e){if(e&&e.type==='RETURN')res=e.value;else throw e;}pos=sp;Object.keys(vars).forEach(k=>delete vars[k]);Object.assign(vars,sv);return res;}
   function skipBlock(){let d=1;while(d>0){const t=consume();if(t.type==='TOKEN_LBRACE')d++;if(t.type==='TOKEN_RBRACE')d--;}}
   function runBlock(){while(peek().type!=='TOKEN_RBRACE'&&peek().type!=='TOKEN_EOF')runStatement();}
   function runStatement(){
     const t=peek();
-    if(t.type==='TOKEN_VAR'){consume();const n=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');vars[n]=parseExpr();expect('TOKEN_SEMICOLON');}
+    if(t.type==='TOKEN_VAR'){consume();const n=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');vars[n]=parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();}
     else if(t.type==='TOKEN_INPUT'){
   consume();
   const n=expect('TOKEN_IDENTIFIER').value;
   const question=parseExpr();
-  expect('TOKEN_SEMICOLON');
+  if(peek().type==='TOKEN_SEMICOLON')consume();
   const answer=window.prompt(question);
   const num=parseFloat(answer);
   vars[n]=isNaN(num)?answer:num;
 }
-   else if(t.type==='TOKEN_INPUT'){consume();const n=expect('TOKEN_IDENTIFIER').value;const question=parseExpr();expect('TOKEN_SEMICOLON');const answer=window.prompt(question);const num=parseFloat(answer);vars[n]=isNaN(num)?answer:num;}
-    else if(t.type==='TOKEN_PRINT'){consume();const v=parseExpr();printFn(Array.isArray(v)?JSON.stringify(v):String(v));expect('TOKEN_SEMICOLON');}
+   else if(t.type==='TOKEN_INPUT'){consume();const n=expect('TOKEN_IDENTIFIER').value;const question=parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();const answer=window.prompt(question);const num=parseFloat(answer);vars[n]=isNaN(num)?answer:num;}
+    else if(t.type==='TOKEN_PRINT'){consume();const v=parseExpr();printFn(Array.isArray(v)?JSON.stringify(v):String(v));if(peek().type==='TOKEN_SEMICOLON')consume();}
     else if(t.type==='TOKEN_ERROR'){consume();const m=parseExpr();throw new Error(`সমস্যা: ${m}`);}
-    else if(t.type==='TOKEN_RETURN'){consume();const v=parseExpr();expect('TOKEN_SEMICOLON');throw{type:'RETURN',value:v};}
+    else if(t.type==='TOKEN_RETURN'){consume();const v=parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();throw{type:'RETURN',value:v};}
     else if(t.type==='TOKEN_IF'){consume();expect('TOKEN_LPAREN');const c=parseExpr();expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');let matched=false;if(c){matched=true;runBlock();expect('TOKEN_RBRACE');}else skipBlock();while(peek().type==='TOKEN_ELIF'){consume();expect('TOKEN_LPAREN');const ec=parseExpr();expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');if(!matched&&ec){matched=true;runBlock();expect('TOKEN_RBRACE');}else skipBlock();}if(peek().type==='TOKEN_ELSE'){consume();expect('TOKEN_LBRACE');if(!matched){runBlock();expect('TOKEN_RBRACE');}else skipBlock();}}
     else if(t.type==='TOKEN_WHILE'){consume();const cp=pos;expect('TOKEN_LPAREN');let c=parseExpr();expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');const bp=pos;while(c){pos=bp;runBlock();pos=cp;expect('TOKEN_LPAREN');c=parseExpr();expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');}skipBlock();}
-    else if(t.type==='TOKEN_FOR'){consume();expect('TOKEN_LPAREN');if(peek().type==='TOKEN_VAR')consume();const iN=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');vars[iN]=parseExpr();expect('TOKEN_SEMICOLON');const cp=pos;parseExpr();expect('TOKEN_SEMICOLON');const uN=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');const up=pos;let d=0;while(true){const tt=peek();if(tt.type==='TOKEN_EOF')break;if(tt.type==='TOKEN_LPAREN'){d++;consume();continue;}if(tt.type==='TOKEN_RPAREN'){if(d===0)break;d--;consume();continue;}consume();}expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');const bp=pos;pos=cp;let c=parseExpr();expect('TOKEN_SEMICOLON');while(c){pos=bp;runBlock();pos=up;vars[uN]=parseExpr();pos=cp;c=parseExpr();expect('TOKEN_SEMICOLON');}pos=bp;skipBlock();}
+    else if(t.type==='TOKEN_FOR'){consume();expect('TOKEN_LPAREN');if(peek().type==='TOKEN_VAR')consume();const iN=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');vars[iN]=parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();const cp=pos;parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();const uN=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');const up=pos;let d=0;while(true){const tt=peek();if(tt.type==='TOKEN_EOF')break;if(tt.type==='TOKEN_LPAREN'){d++;consume();continue;}if(tt.type==='TOKEN_RPAREN'){if(d===0)break;d--;consume();continue;}consume();}expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');const bp=pos;pos=cp;let c=parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();while(c){pos=bp;runBlock();pos=up;vars[uN]=parseExpr();pos=cp;c=parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();}pos=bp;skipBlock();}
     else if(t.type==='TOKEN_FUNCTION'){consume();const n=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_LPAREN');const p=[];while(peek().type!=='TOKEN_RPAREN'&&peek().type!=='TOKEN_EOF'){p.push(expect('TOKEN_IDENTIFIER').value);if(peek().type==='TOKEN_COMMA')consume();}expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');fns[n]={params:p,bodyPos:pos};skipBlock();}
-    else if(t.type==='TOKEN_CALL'){consume();const n=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_LPAREN');const a=[];while(peek().type!=='TOKEN_RPAREN'&&peek().type!=='TOKEN_EOF'){a.push(parseExpr());if(peek().type==='TOKEN_COMMA')consume();}expect('TOKEN_RPAREN');expect('TOKEN_SEMICOLON');callFn(n,a);}
+    else if(t.type==='TOKEN_CALL'){consume();const n=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_LPAREN');const a=[];while(peek().type!=='TOKEN_RPAREN'&&peek().type!=='TOKEN_EOF'){a.push(parseExpr());if(peek().type==='TOKEN_COMMA')consume();}expect('TOKEN_RPAREN');if(peek().type==='TOKEN_SEMICOLON')consume();callFn(n,a);}
     else consume();
   }
   expect('TOKEN_START');while(peek().type!=='TOKEN_END'&&peek().type!=='TOKEN_EOF')runStatement();
