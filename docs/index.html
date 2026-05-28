@@ -129,7 +129,7 @@
 <div class="toast" id="toast">✓ Copied!</div>
 
 <script>
-const KW=[['শুরু','start'],['শেষ','end'],['ধরো','variable'],['দেখাও','print'],['যদি','if'],['নাহলে','else'],['যতক্ষণ','while'],['গণনা করো','for'],['কাজ','function'],['করো','call'],['ফেরত দাও','return'],['থামো','break'],['এগিয়ে যাও','continue'],['সমস্যা','error'],['সত্য','true'],['মিথ্যা','false'],['শূন্য','null']];
+const KW=[['শুরু','start'],['শেষ','end'],['ধরো','variable'],['দেখাও','print'],['যদি','if'],['নাহলে যদি','elif'],['নাহলে','else'],['যতক্ষণ','while'],['গণনা করো','for'],['কাজ','function'],['করো','call'],['ফেরত দাও','return'],['থামো','break'],['এগিয়ে যাও','continue'],['সমস্যা','error'],['সত্য','true'],['মিথ্যা','false'],['শূন্য','null']];
 const kl=document.getElementById('kwList');
 KW.forEach(([b,e])=>{const d=document.createElement('div');d.className='kw-item';d.innerHTML=`<span class="kw-b">${b}</span><span class="kw-e">${e}</span>`;d.onclick=()=>{const ed=document.getElementById('editor');const s=ed.selectionStart;ed.value=ed.value.slice(0,s)+b+ed.value.slice(s);ed.focus();ed.selectionStart=ed.selectionEnd=s+b.length};kl.appendChild(d)});
 
@@ -174,12 +174,12 @@ cond:`// Condition উদাহরণ
 ধরো নম্বর = 75;
 যদি (নম্বর >= 80) {
   দেখাও "A+";
+} নাহলে যদি (নম্বর >= 70) {
+  দেখাও "A";
+} নাহলে যদি (নম্বর >= 60) {
+  দেখাও "B";
 } নাহলে {
-  যদি (নম্বর >= 70) {
-    দেখাও "A";
-  } নাহলে {
-    দেখাও "B";
-  }
+  দেখাও "F";
 }
 
 শেষ`,
@@ -202,7 +202,7 @@ input:`// Input উদাহরণ
 function load(n){document.getElementById('editor').value=EX[n];clearOut();}
 document.getElementById('editor').value=EX.hello;
 
-const KEYWORDS={'শুরু':'TOKEN_START','শেষ':'TOKEN_END','ধরো':'TOKEN_VAR','দেখাও':'TOKEN_PRINT','যদি':'TOKEN_IF','নাহলে':'TOKEN_ELSE','যতক্ষণ':'TOKEN_WHILE','থামো':'TOKEN_BREAK','এগিয়ে যাও':'TOKEN_CONTINUE','কাজ':'TOKEN_FUNCTION','করো':'TOKEN_CALL','ফেরত দাও':'TOKEN_RETURN','গণনা করো':'TOKEN_FOR','সমস্যা':'TOKEN_ERROR','সত্য':'TOKEN_TRUE','মিথ্যা':'TOKEN_FALSE','শূন্য':'TOKEN_NULL','জিজ্ঞেস করো':'TOKEN_INPUT'};
+const KEYWORDS={'শুরু':'TOKEN_START','শেষ':'TOKEN_END','ধরো':'TOKEN_VAR','দেখাও':'TOKEN_PRINT','যদি':'TOKEN_IF','নাহলে যদি':'TOKEN_ELIF','নাহলে':'TOKEN_ELSE','যতক্ষণ':'TOKEN_WHILE','থামো':'TOKEN_BREAK','এগিয়ে যাও':'TOKEN_CONTINUE','কাজ':'TOKEN_FUNCTION','করো':'TOKEN_CALL','ফেরত দাও':'TOKEN_RETURN','গণনা করো':'TOKEN_FOR','সমস্যা':'TOKEN_ERROR','সত্য':'TOKEN_TRUE','মিথ্যা':'TOKEN_FALSE','শূন্য':'TOKEN_NULL','জিজ্ঞেস করো':'TOKEN_INPUT'};
 
 function tokenize(code){
   const tokens=[];let i=0;
@@ -239,11 +239,20 @@ function interpret(tokens,printFn){
   function runStatement(){
     const t=peek();
     if(t.type==='TOKEN_VAR'){consume();const n=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');vars[n]=parseExpr();expect('TOKEN_SEMICOLON');}
-    else if(t.type==='TOKEN_INPUT'){consume();const n=expect('TOKEN_IDENTIFIER').value;const question=parseExpr();expect('TOKEN_SEMICOLON');const answer=window.prompt(question)||'';const num=parseFloat(answer);vars[n]=isNaN(num)?answer:num;}
+    else if(t.type==='TOKEN_INPUT'){
+  consume();
+  const n=expect('TOKEN_IDENTIFIER').value;
+  const question=parseExpr();
+  expect('TOKEN_SEMICOLON');
+  const answer=window.prompt(question);
+  const num=parseFloat(answer);
+  vars[n]=isNaN(num)?answer:num;
+}
+   else if(t.type==='TOKEN_INPUT'){consume();const n=expect('TOKEN_IDENTIFIER').value;const question=parseExpr();expect('TOKEN_SEMICOLON');const answer=window.prompt(question);const num=parseFloat(answer);vars[n]=isNaN(num)?answer:num;}
     else if(t.type==='TOKEN_PRINT'){consume();const v=parseExpr();printFn(Array.isArray(v)?JSON.stringify(v):String(v));expect('TOKEN_SEMICOLON');}
     else if(t.type==='TOKEN_ERROR'){consume();const m=parseExpr();throw new Error(`সমস্যা: ${m}`);}
     else if(t.type==='TOKEN_RETURN'){consume();const v=parseExpr();expect('TOKEN_SEMICOLON');throw{type:'RETURN',value:v};}
-    else if(t.type==='TOKEN_IF'){consume();expect('TOKEN_LPAREN');const c=parseExpr();expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');if(c){runBlock();expect('TOKEN_RBRACE');}else skipBlock();if(peek().type==='TOKEN_ELSE'){consume();expect('TOKEN_LBRACE');if(!c){runBlock();expect('TOKEN_RBRACE');}else skipBlock();}}
+    else if(t.type==='TOKEN_IF'){consume();expect('TOKEN_LPAREN');const c=parseExpr();expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');let matched=false;if(c){matched=true;runBlock();expect('TOKEN_RBRACE');}else skipBlock();while(peek().type==='TOKEN_ELIF'){consume();expect('TOKEN_LPAREN');const ec=parseExpr();expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');if(!matched&&ec){matched=true;runBlock();expect('TOKEN_RBRACE');}else skipBlock();}if(peek().type==='TOKEN_ELSE'){consume();expect('TOKEN_LBRACE');if(!matched){runBlock();expect('TOKEN_RBRACE');}else skipBlock();}}
     else if(t.type==='TOKEN_WHILE'){consume();const cp=pos;expect('TOKEN_LPAREN');let c=parseExpr();expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');const bp=pos;while(c){pos=bp;runBlock();pos=cp;expect('TOKEN_LPAREN');c=parseExpr();expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');}skipBlock();}
     else if(t.type==='TOKEN_FOR'){consume();expect('TOKEN_LPAREN');if(peek().type==='TOKEN_VAR')consume();const iN=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');vars[iN]=parseExpr();expect('TOKEN_SEMICOLON');const cp=pos;parseExpr();expect('TOKEN_SEMICOLON');const uN=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');const up=pos;let d=0;while(true){const tt=peek();if(tt.type==='TOKEN_EOF')break;if(tt.type==='TOKEN_LPAREN'){d++;consume();continue;}if(tt.type==='TOKEN_RPAREN'){if(d===0)break;d--;consume();continue;}consume();}expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');const bp=pos;pos=cp;let c=parseExpr();expect('TOKEN_SEMICOLON');while(c){pos=bp;runBlock();pos=up;vars[uN]=parseExpr();pos=cp;c=parseExpr();expect('TOKEN_SEMICOLON');}pos=bp;skipBlock();}
     else if(t.type==='TOKEN_FUNCTION'){consume();const n=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_LPAREN');const p=[];while(peek().type!=='TOKEN_RPAREN'&&peek().type!=='TOKEN_EOF'){p.push(expect('TOKEN_IDENTIFIER').value);if(peek().type==='TOKEN_COMMA')consume();}expect('TOKEN_RPAREN');expect('TOKEN_LBRACE');fns[n]={params:p,bodyPos:pos};skipBlock();}
