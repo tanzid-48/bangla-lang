@@ -1,138 +1,405 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>বাংলা-ল্যাং</title>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet" />
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--border:#2d3748;--green:#10b981;--text:#f1f5f9;--text-dim:#94a3b8;--red:#ef4444;--blue:#60a5fa}
-    html{scroll-behavior:smooth}
-    body{font-family:'Hind Siliguri',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>বাংলা-ল্যাং — বাংলায় কোড লিখুন</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Spectral:wght@300;400;500;600;700&family=Spectral+SC:wght@400;600&family=JetBrains+Mono:wght@400;500;600&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1530;
+  --ink2:#241c3d;
+  --ink3:#2f2650;
+  --line:#3d3260;
+  --gold:#e8b339;
+  --gold-dim:#bd9230;
+  --cream:#f5f0e6;
+  --cream-dim:#a89bc4;
+  --rose:#c97064;
+  --jade:#5fa893;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Hind Siliguri',sans-serif;
+  background:var(--ink);
+  color:var(--cream);
+  overflow-x:hidden;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232,179,57,.08), transparent),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(95,168,147,.06), transparent);
+}
 
-    /* HERO */
-    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;position:relative;overflow:hidden}
-    .hero::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(16,185,129,.13) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
-    .hero-flag{font-size:72px;margin-bottom:16px;animation:float 3s ease-in-out infinite}
-    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-    .hero-title{font-family:'Tiro Bangla',serif;font-size:clamp(64px,13vw,130px);font-weight:400;color:var(--green);line-height:1;margin-bottom:16px;text-shadow:0 0 80px rgba(16,185,129,.45);letter-spacing:-2px}
-    .hero-sub{font-size:18px;color:var(--text-dim);margin-bottom:32px;font-weight:300}
-    .npm-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 24px;font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--green);margin-bottom:40px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px}
-    .npm-box:hover{border-color:var(--green);background:rgba(16,185,129,.1)}
-    .hero-btns{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
-    .btn-primary{background:var(--green);color:#000;border:none;border-radius:10px;padding:14px 36px;font-size:18px;font-family:'Hind Siliguri',sans-serif;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
-    .btn-primary:hover{background:#34d399;transform:translateY(-2px);box-shadow:0 8px 24px rgba(16,185,129,.35)}
-    .btn-secondary{background:transparent;color:var(--green);border:2px solid var(--green);border-radius:10px;padding:14px 36px;font-size:18px;font-family:'Hind Siliguri',sans-serif;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
-    .btn-secondary:hover{background:rgba(16,185,129,.1);transform:translateY(-2px)}
+/* ───────── decorative alpana corner motif ───────── */
+.corner-motif{position:absolute;width:120px;height:120px;opacity:.35;pointer-events:none}
+.corner-motif.tl{top:24px;left:24px}
+.corner-motif.tr{top:24px;right:24px;transform:scaleX(-1)}
+.corner-motif path{fill:none;stroke:var(--gold);stroke-width:1}
+.corner-motif circle{fill:var(--gold)}
 
-    /* PLAYGROUND */
-    #playground{display:flex;flex-direction:column;border-top:1px solid var(--border)}
-    .pg-header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-    .pg-title{font-size:15px;font-weight:600;color:var(--green)}
-    .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-    .run-btn{background:var(--green);color:#000;border:none;border-radius:8px;padding:8px 20px;font-size:15px;font-family:'Hind Siliguri',sans-serif;font-weight:700;cursor:pointer;transition:all .2s}
-    .run-btn:hover{background:#34d399;transform:scale(1.03)}
-    .run-btn:active{transform:scale(.97)}
-    .clear-btn{background:transparent;color:var(--text-dim);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;font-family:'Hind Siliguri',sans-serif;cursor:pointer;transition:all .2s}
-    .clear-btn:hover{border-color:var(--text-dim);color:var(--text)}
-    .ex-btns{display:flex;gap:6px;flex-wrap:wrap}
-    .ex-btn{background:var(--surface2);color:var(--blue);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:13px;font-family:'Hind Siliguri',sans-serif;cursor:pointer;transition:all .2s}
-    .ex-btn:hover{background:var(--border);color:var(--text)}
-    .editor-area{display:flex;min-height:560px}
-    .editor-pane{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--border)}
-    .pane-label{background:var(--surface2);border-bottom:1px solid var(--border);padding:6px 16px;font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:8px}
-    .dot{width:8px;height:8px;border-radius:50%}
-    #editor{flex:1;background:#0d1117;color:var(--text);border:none;outline:none;resize:none;padding:20px;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.8;min-height:560px}
-    .output-pane{width:42%;display:flex;flex-direction:column}
-    #output{flex:1;background:#0d1117;padding:20px;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.8;overflow-y:auto;white-space:pre-wrap;min-height:560px}
-    .out-line{color:var(--text)}.out-error{color:var(--red)}.out-success{color:var(--green)}.out-empty{color:var(--text-dim);font-style:italic}
-    .kw-panel{width:175px;border-left:1px solid var(--border);overflow-y:auto;max-height:560px}
-    .kw-title{background:var(--surface2);border-bottom:1px solid var(--border);padding:6px 12px;font-size:12px;color:var(--text-dim);position:sticky;top:0}
-    .kw-list{padding:6px}
-    .kw-item{display:flex;justify-content:space-between;padding:5px 8px;border-radius:4px;cursor:pointer;transition:background .15s}
-    .kw-item:hover{background:var(--surface2)}
-    .kw-b{font-size:13px;color:var(--green);font-weight:600}
-    .kw-e{font-size:11px;color:var(--text-dim)}
+/* ───────── HERO ───────── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 24px;position:relative;
+}
 
-    /* FOOTER */
-    footer{background:var(--surface);border-top:1px solid var(--border);padding:48px 24px;text-align:center}
-    .ft-title{font-family:'Tiro Bangla',serif;font-size:32px;color:var(--green);margin-bottom:10px}
-    .ft-dev{color:var(--text-dim);font-size:15px;margin-bottom:24px}
-    .ft-dev a{color:var(--green);text-decoration:none;font-weight:700}
-    .ft-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-    .ft-links a{color:var(--text-dim);text-decoration:none;font-size:14px;transition:color .2s;border:1px solid var(--border);border-radius:6px;padding:7px 16px}
-    .ft-links a:hover{color:var(--green);border-color:var(--green)}
-    .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:10px 20px;border-radius:8px;font-weight:700;font-size:14px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
-    .toast.show{opacity:1}
-    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-  </style>
+.eyebrow{
+  font-family:'Spectral SC',serif;
+  font-size:13px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--gold-dim);margin-bottom:28px;
+  display:flex;align-items:center;gap:14px;
+}
+.eyebrow::before,.eyebrow::after{content:'';width:32px;height:1px;background:var(--gold-dim);opacity:.6}
+
+.hero-mark{
+  display:flex;align-items:flex-end;justify-content:center;gap:0;margin-bottom:8px;
+}
+.hero-dropcap{
+  font-family:'Tiro Bangla',serif;
+  font-size:clamp(120px,22vw,220px);
+  line-height:.78;
+  color:var(--gold);
+  text-shadow:0 0 90px rgba(232,179,57,.35);
+}
+.hero-rest{
+  font-family:'Tiro Bangla',serif;
+  font-size:clamp(56px,11vw,108px);
+  line-height:.95;
+  color:var(--cream);
+  margin-left:6px;
+  padding-bottom:.18em;
+}
+
+.hero-sub{
+  font-family:'Spectral',serif;
+  font-style:italic;
+  font-size:19px;
+  color:var(--cream-dim);
+  margin:18px 0 36px;
+  max-width:460px;
+  font-weight:300;
+}
+
+.npm-box{
+  background:rgba(232,179,57,.06);
+  border:1px solid rgba(232,179,57,.3);
+  border-radius:4px;
+  padding:13px 26px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:14.5px;
+  color:var(--gold);
+  margin-bottom:44px;
+  cursor:pointer;
+  transition:all .25s ease;
+  display:inline-flex;align-items:center;gap:12px;
+  letter-spacing:.01em;
+}
+.npm-box:hover{background:rgba(232,179,57,.12);border-color:var(--gold)}
+.npm-box .copy-hint{font-size:11px;color:var(--cream-dim);opacity:.7}
+
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.btn{
+  font-family:'Hind Siliguri',sans-serif;
+  font-weight:600;font-size:16px;
+  padding:14px 34px;border-radius:3px;
+  cursor:pointer;transition:all .25s ease;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  border:1px solid transparent;
+}
+.btn-primary{background:var(--gold);color:var(--ink)}
+.btn-primary:hover{background:#f2c455;transform:translateY(-2px);box-shadow:0 10px 30px rgba(232,179,57,.25)}
+.btn-ghost{border-color:var(--line);color:var(--cream)}
+.btn-ghost:hover{border-color:var(--gold-dim);color:var(--gold);transform:translateY(-2px)}
+
+.scroll-cue{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  font-family:'Spectral',serif;font-style:italic;font-size:13px;
+  color:var(--cream-dim);opacity:.6;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  animation:driftDown 2.2s ease-in-out infinite;
+}
+@keyframes driftDown{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+/* ───────── SECTION LABEL ───────── */
+.section-label{
+  display:flex;align-items:center;gap:16px;
+  padding:0 24px;margin:0 auto 28px;max-width:1240px;
+}
+.section-label .num{
+  font-family:'Spectral SC',serif;color:var(--gold-dim);font-size:13px;letter-spacing:.2em;
+}
+.section-label .title{
+  font-family:'Tiro Bangla',serif;font-size:26px;color:var(--cream);
+}
+.section-label .rule{flex:1;height:1px;background:var(--line)}
+
+/* ───────── PLAYGROUND ───────── */
+#playground{padding:90px 0 60px;border-top:1px solid var(--line);position:relative}
+
+.pg-wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+.pg-toolbar{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  margin-bottom:18px;
+}
+.toolbar-left{display:flex;align-items:center;gap:10px}
+
+.run-btn{
+  background:var(--gold);color:var(--ink);border:none;border-radius:3px;
+  padding:10px 24px;font-size:15px;font-family:'Hind Siliguri',sans-serif;font-weight:700;
+  cursor:pointer;transition:all .2s ease;display:flex;align-items:center;gap:8px;
+}
+.run-btn:hover{background:#f2c455;transform:translateY(-1px)}
+.run-btn:active{transform:scale(.97)}
+.run-btn svg{width:11px;height:11px}
+
+.clear-btn{
+  background:transparent;color:var(--cream-dim);border:1px solid var(--line);border-radius:3px;
+  padding:10px 16px;font-size:13px;font-family:'Hind Siliguri',sans-serif;cursor:pointer;
+  transition:all .2s ease;
+}
+.clear-btn:hover{border-color:var(--cream-dim);color:var(--cream)}
+
+.ex-row{display:flex;gap:6px;flex-wrap:wrap}
+.ex-btn{
+  background:var(--ink2);color:var(--jade);border:1px solid var(--line);border-radius:3px;
+  padding:6px 14px;font-size:12.5px;font-family:'Hind Siliguri',sans-serif;cursor:pointer;
+  transition:all .2s ease;
+}
+.ex-btn:hover{background:var(--ink3);border-color:var(--jade);color:#8ec9b8}
+.ex-btn.active{background:var(--jade);color:var(--ink);border-color:var(--jade)}
+
+.editor-shell{
+  border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  display:flex;background:#13101f;
+  box-shadow:0 30px 70px -20px rgba(0,0,0,.6);
+}
+.editor-col{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--line);min-width:0}
+.output-col{width:38%;display:flex;flex-direction:column;min-width:0}
+.kw-col{width:190px;display:flex;flex-direction:column;border-left:1px solid var(--line)}
+
+.pane-bar{
+  background:var(--ink2);border-bottom:1px solid var(--line);
+  padding:9px 16px;font-size:11.5px;color:var(--cream-dim);
+  display:flex;align-items:center;gap:8px;letter-spacing:.04em;
+  font-family:'JetBrains Mono',monospace;
+}
+.pane-dot{width:7px;height:7px;border-radius:50%}
+
+#editor{
+  flex:1;background:#13101f;color:var(--cream);border:none;outline:none;resize:none;
+  padding:22px;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.85;
+  min-height:560px;caret-color:var(--gold);
+}
+#editor::selection{background:rgba(232,179,57,.25)}
+
+#output{
+  flex:1;background:#13101f;padding:22px;font-family:'JetBrains Mono',monospace;
+  font-size:14px;line-height:1.85;overflow-y:auto;white-space:pre-wrap;min-height:560px;
+}
+.out-line{color:var(--cream)}
+.out-error{color:var(--rose)}
+.out-success{color:var(--jade)}
+.out-empty{color:var(--cream-dim);font-style:italic;font-family:'Spectral',serif}
+
+.kw-list{padding:8px;overflow-y:auto;max-height:520px}
+.kw-item{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:7px 10px;border-radius:3px;cursor:pointer;transition:background .15s ease;
+}
+.kw-item:hover{background:var(--ink2)}
+.kw-b{font-family:'Hind Siliguri',sans-serif;font-size:13.5px;color:var(--gold);font-weight:600}
+.kw-e{font-family:'Spectral',serif;font-style:italic;font-size:11px;color:var(--cream-dim)}
+
+/* ───────── KEYWORDS REFERENCE GRID (below playground) ───────── */
+#reference{padding:80px 0;border-top:1px solid var(--line)}
+.ref-wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.ref-card{background:var(--ink2);padding:20px}
+.ref-card-title{font-family:'Spectral SC',serif;font-size:11px;letter-spacing:.18em;color:var(--gold-dim);margin-bottom:14px;text-transform:uppercase}
+.ref-kw{display:flex;justify-content:space-between;padding:5px 0;font-size:13.5px;border-bottom:1px solid rgba(61,50,96,.4)}
+.ref-kw:last-child{border-bottom:none}
+.ref-kw-b{color:var(--cream);font-weight:600}
+.ref-kw-e{color:var(--cream-dim);font-family:'Spectral',serif;font-style:italic;font-size:12px}
+
+/* ───────── FOOTER ───────── */
+footer{padding:70px 24px 50px;text-align:center;border-top:1px solid var(--line);position:relative}
+.ft-mark{font-family:'Tiro Bangla',serif;font-size:36px;color:var(--gold);margin-bottom:14px}
+.ft-dev{font-family:'Spectral',serif;font-style:italic;color:var(--cream-dim);font-size:15px;margin-bottom:28px}
+.ft-dev a{color:var(--gold);text-decoration:none;font-style:normal;font-weight:600}
+.ft-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.ft-links a{
+  color:var(--cream-dim);text-decoration:none;font-size:13px;transition:all .2s ease;
+  border:1px solid var(--line);border-radius:3px;padding:9px 18px;
+  font-family:'Hind Siliguri',sans-serif;
+}
+.ft-links a:hover{color:var(--gold);border-color:var(--gold-dim)}
+
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+  background:var(--gold);color:var(--ink);padding:11px 22px;border-radius:4px;
+  font-weight:700;font-size:13.5px;opacity:0;transition:opacity .3s ease;
+  pointer-events:none;z-index:999;font-family:'Hind Siliguri',sans-serif;
+}
+.toast.show{opacity:1}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-dim)}
+
+@media (max-width:880px){
+  .editor-shell{flex-direction:column}
+  .editor-col{border-right:none;border-bottom:1px solid var(--line)}
+  .output-col{width:100%;border-bottom:1px solid var(--line)}
+  .kw-col{width:100%;border-left:none}
+  #editor,#output{min-height:340px}
+  .corner-motif{width:70px;height:70px}
+}
+</style>
 </head>
 <body>
 
+<svg class="corner-motif tl" viewBox="0 0 120 120"><path d="M4 4 Q 4 60 60 60 Q 60 4 4 4 Z"/><path d="M4 30 Q 30 30 30 4"/><circle cx="4" cy="4" r="2.5"/><circle cx="60" cy="60" r="2"/></svg>
+<svg class="corner-motif tr" viewBox="0 0 120 120"><path d="M4 4 Q 4 60 60 60 Q 60 4 4 4 Z"/><path d="M4 30 Q 30 30 30 4"/><circle cx="4" cy="4" r="2.5"/><circle cx="60" cy="60" r="2"/></svg>
+
 <section class="hero">
-  <div class="hero-flag">🇧🇩</div>
-  <h1 class="hero-title">বাংলা-ল্যাং</h1>
-  <p class="hero-sub">বাংলা ভাষায় লেখা একটি toy programming language</p>
+  <div class="eyebrow">টয় প্রোগ্রামিং ল্যাঙ্গুয়েজ</div>
+
+  <div class="hero-mark">
+    <span class="hero-dropcap">বা</span><span class="hero-rest">ংলা-ল্যাং</span>
+  </div>
+
+  <p class="hero-sub">মাতৃভাষায় যুক্তি লিখুন, মাতৃভাষায় চিন্তা করুন — বাংলা শব্দে গড়া একটি সম্পূর্ণ প্রোগ্রামিং ভাষা।</p>
+
   <div class="npm-box" onclick="copyNpm()">
     <span>npm i -g bangla-lang-by-tanzid</span>
-    <span style="font-size:14px;color:var(--text-dim)">📋</span>
+    <span class="copy-hint">ক্লিক করে কপি করুন</span>
   </div>
+
   <div class="hero-btns">
-    <a href="#playground" class="btn-primary">▶ Playground</a>
-    <a href="https://github.com/tanzid-48/bangla-lang" target="_blank" class="btn-secondary">GitHub</a>
+    <a href="#playground" class="btn btn-primary">প্লেগ্রাউন্ডে যান</a>
+    <a href="https://github.com/tanzid-48/bangla-lang" target="_blank" class="btn btn-ghost">GitHub দেখুন</a>
   </div>
+
+  <div class="scroll-cue">↓ নিচে স্ক্রল করুন</div>
 </section>
 
 <section id="playground">
-  <div class="pg-header">
-    <span class="pg-title">🖥️ Playground</span>
-    <div class="toolbar">
-      <button class="run-btn" onclick="runCode()">▶ চালাও</button>
-      <button class="clear-btn" onclick="clearOut()">মুছো</button>
-      <div class="ex-btns">
-        <button class="ex-btn" onclick="load('hello')">Hello</button>
-        <button class="ex-btn" onclick="load('loop')">Loop</button>
-        <button class="ex-btn" onclick="load('fn')">Function</button>
-        <button class="ex-btn" onclick="load('arr')">Array</button>
-        <button class="ex-btn" onclick="load('cond')">Condition</button>
-        <button class="ex-btn" onclick="load('input')">Input</button>
-        <button class="ex-btn" onclick="load('builtin')">Built-in</button>
+  <div class="section-label">
+    <span class="num">০১</span>
+    <span class="title">প্লেগ্রাউন্ড</span>
+    <span class="rule"></span>
+  </div>
+
+  <div class="pg-wrap">
+    <div class="pg-toolbar">
+      <div class="toolbar-left">
+        <button class="run-btn" onclick="runCode()">
+          <svg viewBox="0 0 12 12" fill="currentColor"><path d="M2 1l9 5-9 5V1z"/></svg>
+          চালাও
+        </button>
+        <button class="clear-btn" onclick="clearOut()">মুছে ফেলুন</button>
+      </div>
+      <div class="ex-row" id="exRow">
+        <button class="ex-btn" data-ex="hello" onclick="load('hello',this)">হ্যালো</button>
+        <button class="ex-btn" data-ex="loop" onclick="load('loop',this)">লুপ</button>
+        <button class="ex-btn" data-ex="fn" onclick="load('fn',this)">ফাংশন</button>
+        <button class="ex-btn" data-ex="arr" onclick="load('arr',this)">তালিকা</button>
+        <button class="ex-btn" data-ex="cond" onclick="load('cond',this)">শর্ত</button>
+        <button class="ex-btn" data-ex="input" onclick="load('input',this)">ইনপুট</button>
+        <button class="ex-btn" data-ex="builtin" onclick="load('builtin',this)">বিল্ট-ইন</button>
+      </div>
+    </div>
+
+    <div class="editor-shell">
+      <div class="editor-col">
+        <div class="pane-bar"><span class="pane-dot" style="background:var(--gold)"></span>program.bangla</div>
+        <textarea id="editor" spellcheck="false"></textarea>
+      </div>
+      <div class="output-col">
+        <div class="pane-bar"><span class="pane-dot" style="background:var(--jade)"></span>আউটপুট</div>
+        <div id="output"><span class="out-empty">// চালাও বোতাম চাপুন</span></div>
+      </div>
+      <div class="kw-col">
+        <div class="pane-bar"><span class="pane-dot" style="background:var(--rose)"></span>শব্দকোষ</div>
+        <div class="kw-list" id="kwList"></div>
       </div>
     </div>
   </div>
-  <div class="editor-area">
-    <div class="editor-pane">
-      <div class="pane-label"><span class="dot" style="background:var(--green)"></span>program.bangla</div>
-      <textarea id="editor" spellcheck="false"></textarea>
-    </div>
-    <div class="output-pane">
-      <div class="pane-label"><span class="dot" style="background:var(--blue)"></span>আউটপুট</div>
-      <div id="output"><span class="out-empty">// এখানে output দেখাবে</span></div>
-    </div>
-    <div class="kw-panel">
-      <div class="kw-title">📖 Keywords</div>
-      <div class="kw-list" id="kwList"></div>
-    </div>
+</section>
+
+<section id="reference">
+  <div class="section-label">
+    <span class="num">০২</span>
+    <span class="title">শব্দকোষ</span>
+    <span class="rule"></span>
+  </div>
+  <div class="ref-wrap">
+    <div class="ref-grid" id="refGrid"></div>
   </div>
 </section>
 
 <footer>
-  <div class="ft-title">বাংলা-ল্যাং 🇧🇩</div>
-  <p class="ft-dev">Developed by <a href="https://github.com/tanzid-48" target="_blank">Tanzid Mondol</a></p>
+  <div class="ft-mark">বাংলা-ল্যাং</div>
+  <p class="ft-dev">নির্মাণে <a href="https://github.com/tanzid-48" target="_blank">তানজিদ মন্ডল</a></p>
   <div class="ft-links">
-    <a href="https://github.com/tanzid-48/bangla-lang" target="_blank">⭐ GitHub</a>
-    <a href="https://www.npmjs.com/package/bangla-lang-by-tanzid" target="_blank">📦 npm</a>
-    <a href="https://github.com/tanzid-48/bangla-lang/blob/main/README.md" target="_blank">📖 Docs</a>
+    <a href="https://github.com/tanzid-48/bangla-lang" target="_blank">GitHub</a>
+    <a href="https://www.npmjs.com/package/bangla-lang-by-tanzid" target="_blank">npm প্যাকেজ</a>
+    <a href="https://github.com/tanzid-48/bangla-lang-vscode" target="_blank">VS Code এক্সটেনশন</a>
+    <a href="https://github.com/tanzid-48/bangla-lang/blob/main/README.md" target="_blank">ডকুমেন্টেশন</a>
   </div>
 </footer>
 
-<div class="toast" id="toast">✓ Copied!</div>
+<div class="toast" id="toast">✓ কপি হয়েছে</div>
 
 <script>
-const KW=[['শুরু','start'],['শেষ','end'],['ধরো','variable'],['দেখাও','print'],['যদি','if'],['নাহলে যদি','elif'],['নাহলে','else'],['যতক্ষণ','while'],['গণনা করো','for'],['কাজ','function'],['করো','call'],['ফেরত দাও','return'],['থামো','break'],['এগিয়ে যাও','continue'],['সমস্যা','error'],['সত্য','true'],['মিথ্যা','false'],['শূন্য','null'],['দৈর্ঘ্য()','length'],['বর্গমূল()','sqrt'],['পূর্ণসংখ্যা()','floor'],['এলোমেলো()','random'],['মোট()','sum'],['স্ট্রিং()','to string'],['সংখ্যা()','to number']];
+const KW=[
+['শুরু','program start'],['শেষ','program end'],['ধরো','variable'],['দেখাও','print'],
+['যদি','if'],['নাহলে যদি','else if'],['নাহলে','else'],['যতক্ষণ','while'],
+['গণনা করো','for'],['কাজ','function'],['করো','call'],['ফেরত দাও','return'],
+['থামো','break'],['এগিয়ে যাও','continue'],['সমস্যা','error'],
+['সত্য','true'],['মিথ্যা','false'],['শূন্য','null']
+];
+
+const BUILTINS=[
+['দৈর্ঘ্য()','length'],['বর্গমূল()','square root'],['পূর্ণসংখ্যা()','floor'],
+['এলোমেলো()','random'],['মোট()','array sum'],['স্ট্রিং()','to string'],['সংখ্যা()','to number']
+];
+
+const OPERATORS=[
+['+  -  *  /','যোগ বিয়োগ গুণ ভাগ'],['%','ভাগশেষ'],
+['==  !=','তুলনা সমতা'],['<  >  <=  >=','তুলনা']
+];
+
 const kl=document.getElementById('kwList');
-KW.forEach(([b,e])=>{const d=document.createElement('div');d.className='kw-item';d.innerHTML=`<span class="kw-b">${b}</span><span class="kw-e">${e}</span>`;d.onclick=()=>{const ed=document.getElementById('editor');const s=ed.selectionStart;ed.value=ed.value.slice(0,s)+b+ed.value.slice(s);ed.focus();ed.selectionStart=ed.selectionEnd=s+b.length};kl.appendChild(d)});
+KW.forEach(([b,e])=>{
+  const d=document.createElement('div');d.className='kw-item';
+  d.innerHTML=`<span class="kw-b">${b}</span><span class="kw-e">${e}</span>`;
+  d.onclick=()=>{
+    const ed=document.getElementById('editor');
+    const s=ed.selectionStart;
+    ed.value=ed.value.slice(0,s)+b+ed.value.slice(s);
+    ed.focus();ed.selectionStart=ed.selectionEnd=s+b.length;
+  };
+  kl.appendChild(d);
+});
+
+// reference grid
+const refGrid=document.getElementById('refGrid');
+function buildRefCard(title,items){
+  const c=document.createElement('div');c.className='ref-card';
+  let html=`<div class="ref-card-title">${title}</div>`;
+  items.forEach(([b,e])=>{ html+=`<div class="ref-kw"><span class="ref-kw-b">${b}</span><span class="ref-kw-e">${e}</span></div>`; });
+  c.innerHTML=html;
+  return c;
+}
+refGrid.appendChild(buildRefCard('মূল কাঠামো', KW.slice(0,4)));
+refGrid.appendChild(buildRefCard('নিয়ন্ত্রণ প্রবাহ', KW.slice(4,11)));
+refGrid.appendChild(buildRefCard('ফাংশন ও মান', KW.slice(11,18)));
+refGrid.appendChild(buildRefCard('বিল্ট-ইন ফাংশন', BUILTINS));
+refGrid.appendChild(buildRefCard('অপারেটর', OPERATORS));
 
 const EX={
 hello:`// হ্যালো বাংলাদেশ!
@@ -142,7 +409,7 @@ hello:`// হ্যালো বাংলাদেশ!
 দেখাও "বাংলায় কোড লেখা শুরু!";
 
 শেষ`,
-loop:`// Loop উদাহরণ
+loop:`// লুপ উদাহরণ
 শুরু
 
 গণনা করো (ধরো ক = 1; ক <= 5; ক = ক + 1) {
@@ -150,7 +417,7 @@ loop:`// Loop উদাহরণ
 }
 
 শেষ`,
-fn:`// Function উদাহরণ
+fn:`// ফাংশন উদাহরণ
 শুরু
 
 কাজ যোগ(ক, খ) {
@@ -161,7 +428,7 @@ fn:`// Function উদাহরণ
 দেখাও "যোগফল: " + ফল;
 
 শেষ`,
-arr:`// Array উদাহরণ
+arr:`// তালিকা উদাহরণ
 শুরু
 
 ধরো সংখ্যা = [10, 20, 30, 40, 50];
@@ -169,7 +436,7 @@ arr:`// Array উদাহরণ
 দেখাও "প্রথম: " + সংখ্যা[0];
 
 শেষ`,
-cond:`// Condition উদাহরণ
+cond:`// শর্ত উদাহরণ
 শুরু
 
 ধরো নম্বর = 75;
@@ -184,7 +451,21 @@ cond:`// Condition উদাহরণ
 }
 
 শেষ`,
-builtin:`// Built-in functions
+input:`// ইনপুট উদাহরণ
+শুরু
+
+জিজ্ঞেস করো নাম "আপনার নাম কী?";
+দেখাও "হ্যালো " + নাম;
+
+জিজ্ঞেস করো বয়স "আপনার বয়স কত?";
+যদি (বয়স >= 18) {
+  দেখাও নাম + " প্রাপ্তবয়স্ক!";
+} নাহলে {
+  দেখাও নাম + " অপ্রাপ্তবয়স্ক!";
+}
+
+শেষ`,
+builtin:`// বিল্ট-ইন ফাংশন
 শুরু
 
 দেখাও "দৈর্ঘ্য:";
@@ -203,28 +484,17 @@ builtin:`// Built-in functions
 দেখাও "মোট:";
 দেখাও মোট(তালিকা);
 
-দেখাও স্ট্রিং(42);
-দেখাও সংখ্যা("99");
-
-শেষ`,
-input:`// Input উদাহরণ
-শুরু
-
-জিজ্ঞেস করো নাম "আপনার নাম কী?";
-দেখাও "হ্যালো " + নাম;
-
-জিজ্ঞেস করো বয়স "আপনার বয়স কত?";
-যদি (বয়স >= 18) {
-  দেখাও নাম + " প্রাপ্তবয়স্ক!";
-} নাহলে {
-  দেখাও নাম + " অপ্রাপ্তবয়স্ক!";
-}
-
 শেষ`
 };
 
-function load(n){document.getElementById('editor').value=EX[n];clearOut();}
+function load(n,btn){
+  document.getElementById('editor').value=EX[n];
+  clearOut();
+  document.querySelectorAll('.ex-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
 document.getElementById('editor').value=EX.hello;
+document.querySelector('[data-ex="hello"]').classList.add('active');
 
 const KEYWORDS={'শুরু':'TOKEN_START','শেষ':'TOKEN_END','ধরো':'TOKEN_VAR','দেখাও':'TOKEN_PRINT','যদি':'TOKEN_IF','নাহলে যদি':'TOKEN_ELIF','নাহলে':'TOKEN_ELSE','যতক্ষণ':'TOKEN_WHILE','থামো':'TOKEN_BREAK','এগিয়ে যাও':'TOKEN_CONTINUE','কাজ':'TOKEN_FUNCTION','করো':'TOKEN_CALL','ফেরত দাও':'TOKEN_RETURN','গণনা করো':'TOKEN_FOR','সমস্যা':'TOKEN_ERROR','সত্য':'TOKEN_TRUE','মিথ্যা':'TOKEN_FALSE','শূন্য':'TOKEN_NULL','জিজ্ঞেস করো':'TOKEN_INPUT'};
 
@@ -254,9 +524,9 @@ function tokenize(code){
 function interpret(tokens,printFn){
   let pos=0;const vars={};const fns={};
   const peek=()=>tokens[pos];const consume=()=>tokens[pos++];
-  function expect(t){const x=consume();if(x.type!==t)throw new Error(`Syntax error: "${t}" expected, got "${x.value}"`);return x;}
+  function expect(t){const x=consume();if(x.type!==t)throw new Error(`সিনট্যাক্স ত্রুটি: "${t}" আশা করা হয়েছিল, পাওয়া গেছে "${x.value}"`);return x;}
   function parseExpr(){let l=parsePrimary();const ops=['TOKEN_PLUS','TOKEN_MINUS','TOKEN_MULTIPLY','TOKEN_DIVIDE','TOKEN_MOD','TOKEN_EQ','TOKEN_NEQ','TOKEN_LT','TOKEN_GT','TOKEN_LTE','TOKEN_GTE'];while(ops.includes(peek().type)){const op=consume().value;const r=parsePrimary();if(op==='+')l=typeof l==='string'?l+String(r):l+r;else if(op==='-')l=l-r;else if(op==='*')l=l*r;else if(op==='/')l=l/r;else if(op==='%')l=l%r;else if(op==='==')l=l===r;else if(op==='!=')l=l!==r;else if(op==='<')l=l<r;else if(op==='>')l=l>r;else if(op==='<=')l=l<=r;else if(op==='>=')l=l>=r;}return l;}
-  function parsePrimary(){const t=consume();if(t.type==='TOKEN_NUMBER')return parseFloat(t.value);if(t.type==='TOKEN_STRING')return t.value;if(t.type==='TOKEN_TRUE')return true;if(t.type==='TOKEN_FALSE')return false;if(t.type==='TOKEN_NULL')return null;if(t.type==='TOKEN_LBRACKET'){const a=[];while(peek().type!=='TOKEN_RBRACKET'&&peek().type!=='TOKEN_EOF'){a.push(parseExpr());if(peek().type==='TOKEN_COMMA')consume();}expect('TOKEN_RBRACKET');return a;}if(t.type==='TOKEN_IDENTIFIER'){if(peek().type==='TOKEN_LPAREN'){consume();const a=[];while(peek().type!=='TOKEN_RPAREN'&&peek().type!=='TOKEN_EOF'){a.push(parseExpr());if(peek().type==='TOKEN_COMMA')consume();}expect('TOKEN_RPAREN');return callFn(t.value,a);}if(peek().type==='TOKEN_LBRACKET'){consume();const idx=parseExpr();expect('TOKEN_RBRACKET');const a=vars[t.value];if(!Array.isArray(a))throw new Error(`"${t.value}" তালিকা নয়`);return a[idx];}return vars[t.value]??0;}if(t.type==='TOKEN_LPAREN'){const v=parseExpr();expect('TOKEN_RPAREN');return v;}throw new Error(`Unexpected: "${t.value}"`);}
+  function parsePrimary(){const t=consume();if(t.type==='TOKEN_NUMBER')return parseFloat(t.value);if(t.type==='TOKEN_STRING')return t.value;if(t.type==='TOKEN_TRUE')return true;if(t.type==='TOKEN_FALSE')return false;if(t.type==='TOKEN_NULL')return null;if(t.type==='TOKEN_LBRACKET'){const a=[];while(peek().type!=='TOKEN_RBRACKET'&&peek().type!=='TOKEN_EOF'){a.push(parseExpr());if(peek().type==='TOKEN_COMMA')consume();}expect('TOKEN_RBRACKET');return a;}if(t.type==='TOKEN_IDENTIFIER'){if(peek().type==='TOKEN_LPAREN'){consume();const a=[];while(peek().type!=='TOKEN_RPAREN'&&peek().type!=='TOKEN_EOF'){a.push(parseExpr());if(peek().type==='TOKEN_COMMA')consume();}expect('TOKEN_RPAREN');return callFn(t.value,a);}if(peek().type==='TOKEN_LBRACKET'){consume();const idx=parseExpr();expect('TOKEN_RBRACKET');const a=vars[t.value];if(!Array.isArray(a))throw new Error(`"${t.value}" তালিকা নয়`);return a[idx];}return vars[t.value]??0;}if(t.type==='TOKEN_LPAREN'){const v=parseExpr();expect('TOKEN_RPAREN');return v;}throw new Error(`অপ্রত্যাশিত: "${t.value}"`);}
   const builtins={'দৈর্ঘ্য':a=>{const v=a[0];if(typeof v==='string'||Array.isArray(v))return v.length;throw new Error('দৈর্ঘ্য() শুধু string বা array এ কাজ করে');},'বর্গমূল':a=>Math.sqrt(a[0]),'পূর্ণসংখ্যা':a=>Math.floor(a[0]),'এলোমেলো':a=>Math.floor(Math.random()*(a[1]-a[0]+1))+a[0],'মোট':a=>{if(!Array.isArray(a[0]))throw new Error('মোট() শুধু array এ কাজ করে');return a[0].reduce((x,y)=>x+y,0);},'স্ট্রিং':a=>String(a[0]),'সংখ্যা':a=>parseFloat(a[0])};
   function callFn(name,args){if(builtins[name])return builtins[name](args);const fn=fns[name];if(!fn)throw new Error(`"${name}" নামে কোনো কাজ নেই`);const sv={...vars},sp=pos;fn.params.forEach((p,i)=>{vars[p]=args[i]??null;});let res=null;pos=fn.bodyPos;try{runBlock();}catch(e){if(e&&e.type==='RETURN')res=e.value;else throw e;}pos=sp;Object.keys(vars).forEach(k=>delete vars[k]);Object.assign(vars,sv);return res;}
   function skipBlock(){let d=1;while(d>0){const t=consume();if(t.type==='TOKEN_LBRACE')d++;if(t.type==='TOKEN_RBRACE')d--;}}
@@ -264,16 +534,7 @@ function interpret(tokens,printFn){
   function runStatement(){
     const t=peek();
     if(t.type==='TOKEN_VAR'){consume();const n=expect('TOKEN_IDENTIFIER').value;expect('TOKEN_ASSIGN');vars[n]=parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();}
-    else if(t.type==='TOKEN_INPUT'){
-  consume();
-  const n=expect('TOKEN_IDENTIFIER').value;
-  const question=parseExpr();
-  if(peek().type==='TOKEN_SEMICOLON')consume();
-  const answer=window.prompt(question);
-  const num=parseFloat(answer);
-  vars[n]=isNaN(num)?answer:num;
-}
-   else if(t.type==='TOKEN_INPUT'){consume();const n=expect('TOKEN_IDENTIFIER').value;const question=parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();const answer=window.prompt(question);const num=parseFloat(answer);vars[n]=isNaN(num)?answer:num;}
+    else if(t.type==='TOKEN_INPUT'){consume();const n=expect('TOKEN_IDENTIFIER').value;const question=parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();const answer=window.prompt(question)||'';const num=parseFloat(answer);vars[n]=isNaN(num)?answer:num;}
     else if(t.type==='TOKEN_PRINT'){consume();const v=parseExpr();printFn(Array.isArray(v)?JSON.stringify(v):String(v));if(peek().type==='TOKEN_SEMICOLON')consume();}
     else if(t.type==='TOKEN_ERROR'){consume();const m=parseExpr();throw new Error(`সমস্যা: ${m}`);}
     else if(t.type==='TOKEN_RETURN'){consume();const v=parseExpr();if(peek().type==='TOKEN_SEMICOLON')consume();throw{type:'RETURN',value:v};}
@@ -293,10 +554,10 @@ function runCode(){
   try{const tokens=tokenize(code);const lines=[];interpret(tokens,l=>lines.push(l));
     if(lines.length===0)out.innerHTML='<span class="out-success">✓ প্রোগ্রাম সফলভাবে চলেছে</span>';
     else out.innerHTML=lines.map(l=>`<span class="out-line">${esc(String(l))}</span>`).join('\n');
-  }catch(e){out.innerHTML=`<span class="out-error">❌ ${esc(e.message)}</span>`;}
+  }catch(e){out.innerHTML=`<span class="out-error">✕ ${esc(e.message)}</span>`;}
 }
 
-function clearOut(){document.getElementById('output').innerHTML='<span class="out-empty">// এখানে output দেখাবে</span>';}
+function clearOut(){document.getElementById('output').innerHTML='<span class="out-empty">// চালাও বোতাম চাপুন</span>';}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function copyNpm(){navigator.clipboard.writeText('npm i -g bangla-lang-by-tanzid');const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
 document.getElementById('editor').addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter')runCode();});
