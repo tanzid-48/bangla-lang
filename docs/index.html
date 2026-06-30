@@ -37,9 +37,26 @@ body{
 .corner-motif path{fill:none;stroke:var(--gold);stroke-width:1}
 .corner-motif circle{fill:var(--gold)}
 
+/* ───────── TOP NAV ───────── */
+.topnav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(26,21,48,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  padding:16px 24px;display:flex;align-items:center;justify-content:space-between;
+}
+.nav-mark{font-family:'Tiro Bangla',serif;font-size:21px;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:8px;align-items:center}
+.nav-links a{
+  font-size:13.5px;color:var(--cream-dim);text-decoration:none;padding:8px 14px;
+  border-radius:3px;transition:all .2s ease;font-family:'Hind Siliguri',sans-serif;
+}
+.nav-links a:hover{color:var(--cream);background:var(--ink2)}
+.nav-links a.cta{background:var(--gold);color:var(--ink);font-weight:600}
+.nav-links a.cta:hover{background:#f2c455}
+
 /* ───────── HERO ───────── */
 .hero{
-  min-height:100vh;
+  min-height:calc(100vh - 65px);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;padding:60px 24px;position:relative;
 }
@@ -264,6 +281,15 @@ footer{padding:70px 24px 50px;text-align:center;border-top:1px solid var(--line)
 <svg class="corner-motif tl" viewBox="0 0 120 120"><path d="M4 4 Q 4 60 60 60 Q 60 4 4 4 Z"/><path d="M4 30 Q 30 30 30 4"/><circle cx="4" cy="4" r="2.5"/><circle cx="60" cy="60" r="2"/></svg>
 <svg class="corner-motif tr" viewBox="0 0 120 120"><path d="M4 4 Q 4 60 60 60 Q 60 4 4 4 Z"/><path d="M4 30 Q 30 30 30 4"/><circle cx="4" cy="4" r="2.5"/><circle cx="60" cy="60" r="2"/></svg>
 
+<nav class="topnav">
+  <a href="index.html" class="nav-mark">বাংলা-ল্যাং</a>
+  <div class="nav-links">
+    <a href="#playground">প্লেগ্রাউন্ড</a>
+    <a href="documentation.html">ডকুমেন্টেশন</a>
+    <a href="https://github.com/tanzid-48/bangla-lang" target="_blank" class="cta">GitHub</a>
+  </div>
+</nav>
+
 <section class="hero">
   <div class="eyebrow">টয় প্রোগ্রামিং ল্যাঙ্গুয়েজ</div>
 
@@ -310,6 +336,9 @@ footer{padding:70px 24px 50px;text-align:center;border-top:1px solid var(--line)
         <button class="ex-btn" data-ex="cond" onclick="load('cond',this)">শর্ত</button>
         <button class="ex-btn" data-ex="input" onclick="load('input',this)">ইনপুট</button>
         <button class="ex-btn" data-ex="builtin" onclick="load('builtin',this)">বিল্ট-ইন</button>
+        <button class="ex-btn" data-ex="fizzbuzz" onclick="load('fizzbuzz',this)">ফিজবাজ</button>
+        <button class="ex-btn" data-ex="grade" onclick="load('grade',this)">গ্রেড সিস্টেম</button>
+        <button class="ex-btn" data-ex="prime" onclick="load('prime',this)">মৌলিক সংখ্যা</button>
       </div>
     </div>
 
@@ -345,6 +374,7 @@ footer{padding:70px 24px 50px;text-align:center;border-top:1px solid var(--line)
   <div class="ft-mark">বাংলা-ল্যাং</div>
   <p class="ft-dev">নির্মাণে <a href="https://github.com/tanzid-48" target="_blank">তানজিদ মন্ডল</a></p>
   <div class="ft-links">
+    <a href="documentation.html">ডকুমেন্টেশন</a>
     <a href="https://github.com/tanzid-48/bangla-lang" target="_blank">GitHub</a>
     <a href="https://www.npmjs.com/package/bangla-lang-by-tanzid" target="_blank">npm প্যাকেজ</a>
     <a href="https://github.com/tanzid-48/bangla-lang-vscode" target="_blank">VS Code এক্সটেনশন</a>
@@ -483,6 +513,71 @@ builtin:`// বিল্ট-ইন ফাংশন
 ধরো তালিকা = [10, 20, 30, 40, 50];
 দেখাও "মোট:";
 দেখাও মোট(তালিকা);
+
+শেষ`,
+fizzbuzz:`// ফিজবাজ — ১ থেকে ২০
+শুরু
+
+গণনা করো (ধরো ক = 1; ক <= 20; ক = ক + 1) {
+  যদি (ক % 15 == 0) {
+    দেখাও "ফিজবাজ";
+  } নাহলে যদি (ক % 3 == 0) {
+    দেখাও "ফিজ";
+  } নাহলে যদি (ক % 5 == 0) {
+    দেখাও "বাজ";
+  } নাহলে {
+    দেখাও ক;
+  }
+}
+
+শেষ`,
+grade:`// গ্রেডিং সিস্টেম
+শুরু
+
+কাজ গ্রেড(নম্বর) {
+  যদি (নম্বর >= 80) {
+    ফেরত দাও "A+";
+  } নাহলে যদি (নম্বর >= 70) {
+    ফেরত দাও "A";
+  } নাহলে যদি (নম্বর >= 60) {
+    ফেরত দাও "B";
+  } নাহলে যদি (নম্বর >= 50) {
+    ফেরত দাও "C";
+  } নাহলে {
+    ফেরত দাও "F";
+  }
+}
+
+ধরো নম্বরসমূহ = [92, 78, 65, 45, 88];
+
+গণনা করো (ধরো ক = 0; ক < দৈর্ঘ্য(নম্বরসমূহ); ক = ক + 1) {
+  ধরো নম্বর = নম্বরসমূহ[ক];
+  দেখাও নম্বর + " নম্বরে গ্রেড: " + গ্রেড(নম্বর);
+}
+
+শেষ`,
+prime:`// মৌলিক সংখ্যা নির্ণয়
+শুরু
+
+কাজ মৌলিক(ন) {
+  যদি (ন < 2) {
+    ফেরত দাও মিথ্যা;
+  }
+  গণনা করো (ধরো ক = 2; ক < ন; ক = ক + 1) {
+    যদি (ন % ক == 0) {
+      ফেরত দাও মিথ্যা;
+    }
+  }
+  ফেরত দাও সত্য;
+}
+
+দেখাও "২ থেকে ৩০ এর মধ্যে মৌলিক সংখ্যা:";
+
+গণনা করো (ধরো ন = 2; ন <= 30; ন = ন + 1) {
+  যদি (মৌলিক(ন)) {
+    দেখাও ন;
+  }
+}
 
 শেষ`
 };

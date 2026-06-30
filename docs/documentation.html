@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ডকুমেন্টেশন — বাংলা-ল্যাং</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Spectral:wght@300;400;500;600;700&family=Spectral+SC:wght@400;600&family=JetBrains+Mono:wght@400;500;600&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1530; --ink2:#241c3d; --ink3:#2f2650; --line:#3d3260;
+  --gold:#e8b339; --gold-dim:#bd9230; --cream:#f5f0e6; --cream-dim:#a89bc4;
+  --rose:#c97064; --jade:#5fa893;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Hind Siliguri',sans-serif;background:var(--ink);color:var(--cream);
+  background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232,179,57,.07), transparent);
+}
+a{color:inherit}
+
+/* TOP NAV */
+.topnav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(26,21,48,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  padding:16px 24px;display:flex;align-items:center;justify-content:space-between;
+}
+.nav-mark{font-family:'Tiro Bangla',serif;font-size:21px;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:8px;align-items:center}
+.nav-links a{
+  font-size:13.5px;color:var(--cream-dim);text-decoration:none;padding:8px 14px;
+  border-radius:3px;transition:all .2s ease;font-family:'Hind Siliguri',sans-serif;
+}
+.nav-links a:hover{color:var(--cream);background:var(--ink2)}
+.nav-links a.cta{background:var(--gold);color:var(--ink);font-weight:600}
+.nav-links a.cta:hover{background:#f2c455}
+
+/* LAYOUT: sidebar + content */
+.doc-layout{display:flex;max-width:1240px;margin:0 auto}
+.sidebar{
+  width:230px;flex-shrink:0;padding:40px 20px;
+  position:sticky;top:65px;align-self:flex-start;
+  max-height:calc(100vh - 65px);overflow-y:auto;
+}
+.sidebar-group{margin-bottom:26px}
+.sidebar-label{
+  font-family:'Spectral SC',serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold-dim);margin-bottom:10px;
+}
+.sidebar a{
+  display:block;font-size:13.5px;color:var(--cream-dim);text-decoration:none;
+  padding:6px 10px;border-radius:3px;margin-bottom:2px;transition:all .15s ease;
+  border-left:2px solid transparent;
+}
+.sidebar a:hover{color:var(--cream);background:var(--ink2)}
+.sidebar a.active{color:var(--gold);border-left-color:var(--gold);background:rgba(232,179,57,.06)}
+
+.content{flex:1;min-width:0;padding:50px 36px 120px}
+
+/* DOC HEADER */
+.doc-eyebrow{
+  font-family:'Spectral SC',serif;font-size:12px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--gold-dim);margin-bottom:14px;
+}
+.doc-title{font-family:'Tiro Bangla',serif;font-size:54px;color:var(--cream);margin-bottom:14px;line-height:1.1}
+.doc-intro{font-family:'Spectral',serif;font-style:italic;font-size:17px;color:var(--cream-dim);max-width:560px;margin-bottom:50px}
+
+/* SECTIONS */
+.doc-section{margin-bottom:56px;scroll-margin-top:90px}
+.doc-h2{
+  font-family:'Tiro Bangla',serif;font-size:28px;color:var(--cream);margin-bottom:18px;
+  padding-bottom:12px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;
+}
+.doc-h2 .tag{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold-dim);
+  border:1px solid var(--line);border-radius:3px;padding:3px 8px;font-weight:400;
+}
+.doc-p{font-size:15px;line-height:1.85;color:var(--cream);margin-bottom:16px;max-width:640px}
+.doc-p code{
+  font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--ink2);
+  color:var(--gold);padding:2px 6px;border-radius:3px;
+}
+
+/* TABLE */
+.doc-table{width:100%;border-collapse:collapse;margin:20px 0 28px;font-size:14px}
+.doc-table th{
+  text-align:left;font-family:'Spectral SC',serif;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--gold-dim);padding:10px 14px;border-bottom:1px solid var(--line);
+}
+.doc-table td{padding:10px 14px;border-bottom:1px solid rgba(61,50,96,.4);vertical-align:top}
+.doc-table tr:hover td{background:rgba(232,179,57,.03)}
+.doc-table .kw{font-family:'Hind Siliguri',sans-serif;font-weight:600;color:var(--gold);white-space:nowrap}
+.doc-table .en{color:var(--cream-dim);font-family:'Spectral',serif;font-style:italic;font-size:13px}
+
+/* CODE BLOCK */
+.code-block{
+  background:#13101f;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:18px 0 28px;
+}
+.code-block-bar{
+  background:var(--ink2);border-bottom:1px solid var(--line);padding:8px 16px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cream-dim);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.copy-btn{
+  background:none;border:1px solid var(--line);color:var(--cream-dim);border-radius:3px;
+  padding:4px 10px;font-size:11px;cursor:pointer;font-family:'Hind Siliguri',sans-serif;
+  transition:all .15s ease;
+}
+.copy-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
+.code-block pre{
+  padding:18px 20px;overflow-x:auto;font-family:'JetBrains Mono',monospace;
+  font-size:13.5px;line-height:1.8;color:var(--cream);
+}
+
+/* CALLOUT */
+.callout{
+  border-left:3px solid var(--jade);background:rgba(95,168,147,.06);
+  padding:14px 18px;border-radius:0 4px 4px 0;margin:20px 0 28px;font-size:14px;
+  font-family:'Spectral',serif;color:var(--cream);
+}
+.callout.warn{border-left-color:var(--rose);background:rgba(201,112,100,.06)}
+
+/* footer nav */
+.doc-footer-nav{
+  display:flex;justify-content:space-between;margin-top:70px;padding-top:24px;border-top:1px solid var(--line);
+}
+.doc-footer-nav a{
+  font-family:'Spectral',serif;font-style:italic;color:var(--cream-dim);text-decoration:none;
+  font-size:14px;transition:color .2s ease;
+}
+.doc-footer-nav a:hover{color:var(--gold)}
+
+@media (max-width:880px){
+  .sidebar{display:none}
+  .content{padding:36px 20px 80px}
+  .doc-title{font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="nav-mark">বাংলা-ল্যাং</a>
+  <div class="nav-links">
+    <a href="index.html#playground">প্লেগ্রাউন্ড</a>
+    <a href="documentation.html" style="color:var(--gold)">ডকুমেন্টেশন</a>
+    <a href="https://github.com/tanzid-48/bangla-lang" target="_blank" class="cta">GitHub</a>
+  </div>
+</nav>
+
+<div class="doc-layout">
+  <aside class="sidebar">
+    <div class="sidebar-group">
+      <div class="sidebar-label">শুরু করুন</div>
+      <a href="#install" class="active">ইনস্টলেশন</a>
+      <a href="#rules">লেখার নিয়ম</a>
+      <a href="#structure">প্রজেক্ট কাঠামো</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-label">ভাষা রেফারেন্স</div>
+      <a href="#keywords">কীওয়ার্ড</a>
+      <a href="#operators">অপারেটর</a>
+      <a href="#builtins">বিল্ট-ইন ফাংশন</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-label">উদাহরণ</div>
+      <a href="#ex-basic">মৌলিক</a>
+      <a href="#ex-control">নিয়ন্ত্রণ প্রবাহ</a>
+      <a href="#ex-function">ফাংশন ও তালিকা</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-label">টুলস</div>
+      <a href="#tools">VS Code এক্সটেনশন</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="doc-eyebrow">সম্পূর্ণ নির্দেশিকা</div>
+    <h1 class="doc-title">ডকুমেন্টেশন</h1>
+    <p class="doc-intro">বাংলা-ল্যাং দিয়ে কোড লেখা শুরু করার আগে যা জানা দরকার — ইনস্টলেশন থেকে শুরু করে প্রতিটি কীওয়ার্ড ও উদাহরণ।</p>
+
+    <section class="doc-section" id="install">
+      <h2 class="doc-h2">ইনস্টলেশন <span class="tag">npm</span></h2>
+      <p class="doc-p">গ্লোবালি ইনস্টল করুন, যেকোনো ফোল্ডার থেকে <code>bangla-lang</code> কমান্ড ব্যবহার করতে পারবেন।</p>
+      <div class="code-block">
+        <div class="code-block-bar"><span>টার্মিনাল</span><button class="copy-btn" onclick="copyCode(this)">কপি</button></div>
+        <pre>npm i -g bangla-lang-by-tanzid</pre>
+      </div>
+      <p class="doc-p">ইনস্টল হয়ে গেলে যেকোনো <code>.bangla</code> ফাইল চালান:</p>
+      <div class="code-block">
+        <div class="code-block-bar"><span>টার্মিনাল</span><button class="copy-btn" onclick="copyCode(this)">কপি</button></div>
+        <pre>bangla-lang আপনার-ফাইল.bangla</pre>
+      </div>
+      <div class="callout">সরাসরি ব্রাউজারেও চালাতে পারেন — কোনো ইনস্টলেশন ছাড়াই। <a href="index.html#playground" style="color:var(--jade)">প্লেগ্রাউন্ড খুলুন →</a></div>
+    </section>
+
+    <section class="doc-section" id="rules">
+      <h2 class="doc-h2">লেখার নিয়ম</h2>
+      <table class="doc-table">
+        <tr><th>নিয়ম</th><th>উদাহরণ</th></tr>
+        <tr><td>প্রতিটি প্রোগ্রাম <code>শুরু</code> দিয়ে শুরু হয় ( <code>;</code> ছাড়াই )</td><td><code>শুরু</code></td></tr>
+        <tr><td>প্রতিটি প্রোগ্রাম <code>শেষ</code> দিয়ে শেষ হয় ( <code>;</code> ছাড়াই )</td><td><code>শেষ</code></td></tr>
+        <tr><td>বাকি সব statement এর শেষে <code>;</code> বাধ্যতামূলক</td><td><code>দেখাও "হ্যালো";</code></td></tr>
+        <tr><td><code>{ }</code> ব্লকের পরে সেমিকোলন লাগে না</td><td><code>যদি (ক == ৫) { }</code></td></tr>
+        <tr><td>কমেন্ট লিখতে <code>//</code> ব্যবহার করুন</td><td><code>// এটি একটি মন্তব্য</code></td></tr>
+      </table>
+    </section>
+
+    <section class="doc-section" id="structure">
+      <h2 class="doc-h2">প্রজেক্ট কাঠামো</h2>
+      <div class="code-block">
+        <div class="code-block-bar"><span>ফোল্ডার গঠন</span></div>
+        <pre>bangla-lang/
+├── src/
+│   ├── lexer.js          # কীওয়ার্ড → টোকেন রূপান্তর
+│   ├── interpreter.js    # টোকেন এক্সিকিউট করে
+│   └── index.js          # মূল এন্ট্রি পয়েন্ট
+├── examples/              # নমুনা প্রোগ্রাম
+├── docs/                  # প্লেগ্রাউন্ড ওয়েবসাইট
+└── README.md</pre>
+      </div>
+    </section>
+
+    <section class="doc-section" id="keywords">
+      <h2 class="doc-h2">কীওয়ার্ড <span class="tag">18</span></h2>
+      <table class="doc-table">
+        <tr><th>কীওয়ার্ড</th><th>অর্থ</th></tr>
+        <tr><td class="kw">শুরু</td><td class="en">প্রোগ্রাম শুরু</td></tr>
+        <tr><td class="kw">শেষ</td><td class="en">প্রোগ্রাম শেষ</td></tr>
+        <tr><td class="kw">ধরো</td><td class="en">variable ঘোষণা / reassign</td></tr>
+        <tr><td class="kw">দেখাও</td><td class="en">print / আউটপুট দেখানো</td></tr>
+        <tr><td class="kw">জিজ্ঞেস করো</td><td class="en">ইউজারের কাছ থেকে input নেওয়া</td></tr>
+        <tr><td class="kw">যদি</td><td class="en">if শর্ত</td></tr>
+        <tr><td class="kw">নাহলে যদি</td><td class="en">else if</td></tr>
+        <tr><td class="kw">নাহলে</td><td class="en">else</td></tr>
+        <tr><td class="kw">যতক্ষণ</td><td class="en">while লুপ</td></tr>
+        <tr><td class="kw">গণনা করো</td><td class="en">for লুপ</td></tr>
+        <tr><td class="kw">থামো</td><td class="en">break</td></tr>
+        <tr><td class="kw">এগিয়ে যাও</td><td class="en">continue</td></tr>
+        <tr><td class="kw">কাজ</td><td class="en">function ঘোষণা</td></tr>
+        <tr><td class="kw">করো</td><td class="en">function call</td></tr>
+        <tr><td class="kw">ফেরত দাও</td><td class="en">return</td></tr>
+        <tr><td class="kw">সমস্যা</td><td class="en">error throw করা</td></tr>
+        <tr><td class="kw">সত্য</td><td class="en">true</td></tr>
+        <tr><td class="kw">মিথ্যা</td><td class="en">false</td></tr>
+        <tr><td class="kw">শূন্য</td><td class="en">null</td></tr>
+      </table>
+    </section>
+
+    <section class="doc-section" id="operators">
+      <h2 class="doc-h2">অপারেটর</h2>
+      <table class="doc-table">
+        <tr><th>চিহ্ন</th><th>কাজ</th></tr>
+        <tr><td class="kw">+  −  *  /</td><td class="en">যোগ, বিয়োগ, গুণ, ভাগ</td></tr>
+        <tr><td class="kw">%</td><td class="en">ভাগশেষ (modulus)</td></tr>
+        <tr><td class="kw">==  !=</td><td class="en">সমান, অসমান</td></tr>
+        <tr><td class="kw">&lt;  &gt;  &lt;=  &gt;=</td><td class="en">তুলনা (less/greater than)</td></tr>
+      </table>
+    </section>
+
+    <section class="doc-section" id="builtins">
+      <h2 class="doc-h2">বিল্ট-ইন ফাংশন</h2>
+      <table class="doc-table">
+        <tr><th>ফাংশন</th><th>কাজ</th><th>উদাহরণ</th></tr>
+        <tr><td class="kw">দৈর্ঘ্য()</td><td class="en">string / array এর length</td><td><code>দৈর্ঘ্য("হ্যালো")</code> → 5</td></tr>
+        <tr><td class="kw">বর্গমূল()</td><td class="en">square root</td><td><code>বর্গমূল(25)</code> → 5</td></tr>
+        <tr><td class="kw">পূর্ণসংখ্যা()</td><td class="en">floor</td><td><code>পূর্ণসংখ্যা(3.7)</code> → 3</td></tr>
+        <tr><td class="kw">এলোমেলো()</td><td class="en">random number</td><td><code>এলোমেলো(1, 10)</code></td></tr>
+        <tr><td class="kw">মোট()</td><td class="en">array এর sum</td><td><code>মোট([1,2,3])</code> → 6</td></tr>
+        <tr><td class="kw">স্ট্রিং()</td><td class="en">number → string</td><td><code>স্ট্রিং(42)</code> → "42"</td></tr>
+        <tr><td class="kw">সংখ্যা()</td><td class="en">string → number</td><td><code>সংখ্যা("42")</code> → 42</td></tr>
+      </table>
+    </section>
+
+    <section class="doc-section" id="ex-basic">
+      <h2 class="doc-h2">মৌলিক উদাহরণ</h2>
+      <p class="doc-p">সবচেয়ে সহজ প্রোগ্রাম — একটি বার্তা দেখানো।</p>
+      <div class="code-block">
+        <div class="code-block-bar"><span>hello.bangla</span><button class="copy-btn" onclick="copyCode(this)">কপি</button></div>
+        <pre>শুরু
+
+দেখাও "হ্যালো বাংলাদেশ!";
+
+শেষ</pre>
+      </div>
+
+      <p class="doc-p">ভেরিয়েবল ঘোষণা ও গাণিতিক হিসাব।</p>
+      <div class="code-block">
+        <div class="code-block-bar"><span>variable.bangla</span><button class="copy-btn" onclick="copyCode(this)">কপি</button></div>
+        <pre>শুরু
+
+ধরো ক = 10;
+ধরো খ = 5;
+ধরো যোগফল = ক + খ;
+
+দেখাও "যোগফল: " + যোগফল;
+
+শেষ</pre>
+      </div>
+    </section>
+
+    <section class="doc-section" id="ex-control">
+      <h2 class="doc-h2">নিয়ন্ত্রণ প্রবাহ</h2>
+      <p class="doc-p">শর্ত যাচাই — গ্রেডিং সিস্টেমের একটি বাস্তব উদাহরণ।</p>
+      <div class="code-block">
+        <div class="code-block-bar"><span>grade.bangla</span><button class="copy-btn" onclick="copyCode(this)">কপি</button></div>
+        <pre>শুরু
+
+ধরো নম্বর = 75;
+
+যদি (নম্বর >= 80) {
+  দেখাও "A+";
+} নাহলে যদি (নম্বর >= 70) {
+  দেখাও "A";
+} নাহলে {
+  দেখাও "পরীক্ষায় আরও মনোযোগ দরকার";
+}
+
+শেষ</pre>
+      </div>
+
+      <p class="doc-p">for ও while লুপ — দুই ধরনের পুনরাবৃত্তি।</p>
+      <div class="code-block">
+        <div class="code-block-bar"><span>loops.bangla</span><button class="copy-btn" onclick="copyCode(this)">কপি</button></div>
+        <pre>শুরু
+
+// গণনা করো লুপ
+গণনা করো (ধরো ক = 1; ক <= 5; ক = ক + 1) {
+  দেখাও ক;
+}
+
+// যতক্ষণ লুপ
+ধরো খ = 10;
+যতক্ষণ (খ > 0) {
+  দেখাও খ;
+  ধরো খ = খ - 2;
+}
+
+শেষ</pre>
+      </div>
+    </section>
+
+    <section class="doc-section" id="ex-function">
+      <h2 class="doc-h2">ফাংশন ও তালিকা</h2>
+      <p class="doc-p">একটি ফাংশন যা দুইটি সংখ্যার গড় বের করে।</p>
+      <div class="code-block">
+        <div class="code-block-bar"><span>average.bangla</span><button class="copy-btn" onclick="copyCode(this)">কপি</button></div>
+        <pre>শুরু
+
+কাজ গড়(ক, খ) {
+  ফেরত দাও (ক + খ) / 2;
+}
+
+ধরো ফলাফল = গড়(20, 30);
+দেখাও "গড়: " + ফলাফল;
+
+শেষ</pre>
+      </div>
+
+      <p class="doc-p">তালিকা (array) নিয়ে কাজ করা, বিল্ট-ইন ফাংশন সহ।</p>
+      <div class="code-block">
+        <div class="code-block-bar"><span>students.bangla</span><button class="copy-btn" onclick="copyCode(this)">কপি</button></div>
+        <pre>শুরু
+
+ধরো নম্বরসমূহ = [85, 90, 78, 92, 88];
+
+দেখাও "মোট শিক্ষার্থী: " + দৈর্ঘ্য(নম্বরসমূহ);
+দেখাও "মোট নম্বর: " + মোট(নম্বরসমূহ);
+
+শেষ</pre>
+      </div>
+
+      <div class="callout warn">প্রতিটি উদাহরণ সরাসরি প্লেগ্রাউন্ডে কপি-পেস্ট করে চালাতে পারেন — কোনো সেটআপ লাগবে না।</div>
+    </section>
+
+    <section class="doc-section" id="tools">
+      <h2 class="doc-h2">VS Code এক্সটেনশন</h2>
+      <p class="doc-p">সিনট্যাক্স হাইলাইটিং সহ <code>.bangla</code> ফাইলে কোড লিখুন VS Code এ।</p>
+      <div class="code-block">
+        <div class="code-block-bar"><span>টার্মিনাল</span><button class="copy-btn" onclick="copyCode(this)">কপি</button></div>
+        <pre>code --install-extension bangla-lang-1.0.0.vsix</pre>
+      </div>
+      <p class="doc-p"><a href="https://github.com/tanzid-48/bangla-lang-vscode" target="_blank" style="color:var(--gold)">এক্সটেনশন রিপোজিটরি দেখুন →</a></p>
+    </section>
+
+    <div class="doc-footer-nav">
+      <a href="index.html">← হোমপেজে ফিরুন</a>
+      <a href="index.html#playground">প্লেগ্রাউন্ডে চেষ্টা করুন →</a>
+    </div>
+  </main>
+</div>
+
+<script>
+function copyCode(btn){
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent);
+  const orig = btn.textContent;
+  btn.textContent = 'হয়েছে ✓';
+  setTimeout(()=>btn.textContent = orig, 1500);
+}
+
+// active sidebar link on scroll
+const sections = document.querySelectorAll('.doc-section');
+const links = document.querySelectorAll('.sidebar a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top <= 120) current = sec.id;
+  });
+  links.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+</body>
+</html>
